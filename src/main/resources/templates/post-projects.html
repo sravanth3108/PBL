@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>PBL</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* Add custom CSS styles for responsiveness */
+        @media (max-width: 768px) {
+            .hlogo {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .deptTitle {
+                text-align: center;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .container-fluid {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body class="bdy">
+    <div class="container-fluid" id="webhead">
+        <div class="hlogo left" id="icon">
+            <a href="https://www.nwmissouri.edu" title="Return to Northwest">
+                <img alt="Northwest Missouri State University" height="79px"
+                    src="https://www.nwmissouri.edu/layout/v2019/images/svg/logo-n.svg" width="74px">
+            </a>
+        </div>
+        <div class="deptTitle left" id="title" style="float:left">
+            <a href="https://www.nwmissouri.edu">Northwest Missouri State University</a>
+        </div>
+    </div>
+
+    <script>
+        function show() {
+            document.getElementById("projectForm").style.display = 'block';
+            document.getElementById("postInfo").style.display = 'none';
+            var buttons = document.getElementsByClassName("postprojectBTN");
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].style.display = 'none';
+            }
+        }
+    </script>
+
+    <div class="container-fluid">
+        <div class="sidebar left">
+            <ul class="nav-links">
+                <li>
+                    <a href="#">
+                        <i class='bx bx-grid-alt'></i>
+                        <span class="links_name">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="active">
+                        <i class='bx bx-box'></i>
+                        <span class="links_name">Upload projects</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="viewProjects">
+                        <i class='bx bx-list-ul'></i>
+                        <span class="links_name">View Projects</span>
+                    </a>
+                </li>
+                <li class="log_out">
+                    <a href="#">
+                        <i class='bx bx-log-out'></i>
+                        <span class="links_name">Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="welcome">
+            <h1>Welcome User</h1>
+        </div>
+        <div class="postprojectBTN Button" onclick="show()">Post a New Project</div>
+    </div>
+
+    <div class="container container-fluid postInfo" id="postInfo">
+        <p>Welcome to the NW PBL Project Explorer<br><h3>Professional-Based Learning</h3><br>The NW PBL Project Explorer
+            is a platform designed to facilitate professional-based learning (PBL) projects for faculties and students. It
+            serves as a central hub where users can post, explore, and discuss potential PBL projects.<br>p<h3>Sponsorship and
+                Implementation</h3><br>As the CITE office, we have the opportunity to select and sponsor promising PBL
+            projects from the platform. If a project aligns with our objectives, we can provide support and resources to
+            bring it to life.<br><h3>Start Exploring PBL Projects Today</h3><br> Join the NW PBL Project Explorer to
+            discover exciting professional-based learning opportunities, connect with like-minded individuals, and
+            contribute to meaningful projects. Let's collaborate and make a real impact</p>
+    </div>
+
+    <div class="container-fluid">
+        <form id="projectForm" method="post" action="/save">
+            <label for="projName">Project Name</label>
+            <input type="text" id="projName" name="projName" placeholder="Project name..">
+
+            <label for="projReq">Project Requirements</label>
+            <input type="text" id="projReq" name="projReq" placeholder="Enter project requirements..">
+
+            <label for="projDesc">Project Description</label>
+            <input type="text" id="projDesc" name="projDesc" placeholder="Enter project Description..">
+
+            <label for="email">Email to contact</label>
+            <input type="text" id="email" name="email" placeholder="Enter your contact email..">
+
+            <label for="phone">Contact number</label>
+            <input type="number" id="phone" name="phone" placeholder="Enter your contact number..">
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+
+</html>

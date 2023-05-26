@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Project Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+  
+    <style>
+        /* CSS styling for the user project page */
+        * {
+            font-family: 'system-ui';
+        }
+        .project-container {
+            border-radius: 18px;
+            width: 80%;
+            margin-top:20px;
+            padding: 12px;
+            margin-left: 6.2cm;
+        }
+        .partition {
+            border-radius: 8px;
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-left:20px;
+            margin-bottom: 20px;
+            display: block;
+            
+        }
+        .partition1 {
+            padding-top: 0px;
+            padding-left: 20px;
+            padding-bottom: 0px;
+            border-bottom: 2px solid #000;
+            margin-bottom: 12px;
+        }
+        .partition2 {
+            border-radius: 4px;
+            background-color: white;
+            padding-top: 0px;
+            padding-left: 20px;
+            padding-bottom: 40px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            margin : 15px;	
+        }
+        .partition3 {
+            border-radius: 4px;
+            background-color: transparent;
+            position: relative;
+            border: 0px;
+        }
+        .partition h2 {
+            margin: 0;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .partition-content {
+            margin-top: 10px;
+        }
+        .star-project-user {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .star-project-user button {
+            padding: 5px 10px;
+            border-radius: 10px;
+            background-color: red;
+        }
+        #h2 {
+            background-color: #006A4E;
+            color: #f0f0f0;
+            padding: 20px;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-left: 2cm;
+            letter-spacing: 3px;
+            box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.3);
+        }
+        #commentText
+        {
+            width: 90%;
+            padding-top: 10px;
+            padding-left: 20px;
+           border-radius: 8px;
+        }
+        main {
+            align-items: center;
+            justify-content: center;
+            height: 75vh;
+            width: 100%;
+            background-size: contain;
+            display: block;
+        }
+        .logo {
+            position: absolute;
+            display: flex;
+            height: 70px;
+            width: 70px;
+            top: 30px;
+        }
+        .logo:hover {
+            left: -6px;
+            top: 22px;
+            height: 90px;
+            width: 90px;
+        }
+        .comment {
+            margin-left: 20px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .comment .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .comment .user-info img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .comment .user-info .username {
+            font-weight: bold;
+        }
+        .reply-form {
+            margin-top: 10px;
+            
+            
+        }
+        .reply-form textarea {
+            width: 90%;
+            border-radius: 10px;
+            border: transparent;
+            
+        }
+        .reply-form button {
+            margin-top: 5px;
+            border-radius: 10px;
+            background-color: #006A4E;
+            color: #fff;
+            padding: 5px 10px;
+        }
+        .partition2 {
+    /* ... */
+    overflow-y: auto;
+    max-height: 300px; /* Set the maximum height for the comments container */
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <h2 id="h2">Project Page</h2>
+        <div class="logo">
+            <img src="https://avatars0.githubusercontent.com/u/44843452?s=280&v=4" onclick="redirectToWebsite()">
+        </div>
+    </header>
+    <main>
+    <div class="container-fluid">
+        <div class="sidebar left">
+            <ul class="nav-links">
+                <li>
+                    <a href="#">
+                        <i class='bx bx-grid-alt'></i>
+                        <span class="links_name">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="active">
+                        <i class='bx bx-box'></i>
+                        <span class="links_name">Upload projects</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="viewProjects">
+                        <i class='bx bx-list-ul'></i>
+                        <span class="links_name">View Projects</span>
+                    </a>
+                </li>
+                <li class="log_out">
+                    <a href="#">
+                        <i class='bx bx-log-out'></i>
+                        <span class="links_name">Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="project-container" class="project-container">
+            <div class="partition">
+                <div class="partition1">
+                    <h2 class="project-title" style="margin:15px" th:text="${projectName}"></h2>
+                   <p class="project-description" style="margin-left:35px;margin:20px" th:text="${projDesc}"></p>
+                   
+                </div>
+                <div class="partition2">
+                    <div class="partition3">
+                        <h2>Comments</h2>
+                        <div id="comments">
+                            <form onsubmit="addComment(event)">
+                                <textarea id="commentText" placeholder="Write a comment" required></textarea>
+                                <button id="post-cmt" type="submit">Post</button>
+                                <i id="post-cmt" class="bi bi-send"></i>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+   </div> </main>
+
+    <script>
+        var comments = [];
+
+        function addComment(event) {
+            event.preventDefault();
+
+            var commentText = document.getElementById('commentText').value;
+            var commentElement = createCommentElement(commentText);
+            document.getElementById('comments').appendChild(commentElement);
+
+            document.getElementById('commentText').value = '';
+        }
+
+        function createCommentElement(commentText) {
+            var commentDiv = document.createElement('div');
+            commentDiv.className = 'comment';
+
+            var userInfoDiv = document.createElement('div');
+            userInfoDiv.className = 'user-info';
+
+            var userAvatarImg = document.createElement('img');
+            userAvatarImg.src = 'https://purepng.com/public/uploads/large/purepng.com-ironmanironmansuperheromarvel-comicscharactermarvel-studiosrobert-downey-jrtony-stark-1701528612013ewdfe.png'; // Replace with the user's avatar URL
+            userInfoDiv.appendChild(userAvatarImg);
+
+            var usernameSpan = document.createElement('span');
+            usernameSpan.className = 'username';
+            usernameSpan.textContent = 'TonyStark'; // Replace with the user's username
+            userInfoDiv.appendChild(usernameSpan);
+
+            commentDiv.appendChild(userInfoDiv);
+
+            var contentDiv = document.createElement('div');
+            contentDiv.className = 'content';
+            contentDiv.textContent = commentText;
+            commentDiv.appendChild(contentDiv);
+
+            var replyForm = document.createElement('form');
+            replyForm.className = 'reply-form';
+            replyForm.onsubmit = function(event) {
+                addReply(event, commentDiv);
+            };
+
+            var replyTextarea = document.createElement('textarea');
+            replyTextarea.placeholder = 'Reply to this comment';
+            replyForm.appendChild(replyTextarea);
+
+            var replyButton = document.createElement('button');
+            replyButton.type = 'submit';
+            replyButton.textContent = 'Reply';
+            replyForm.appendChild(replyButton);
+
+            commentDiv.appendChild(replyForm);
+
+            return commentDiv;
+        }
+
+        function addReply(event, parentComment) {
+            event.preventDefault();
+
+            var replyTextarea = parentComment.querySelector('textarea');
+            var replyText = replyTextarea.value;
+
+            var replyElement = createCommentElement(replyText);
+            parentComment.appendChild(replyElement);
+
+            replyTextarea.value = '';
+        }
+
+        function redirectToWebsite() {
+            window.location.href = 'https://www.nwmissouri.edu/'; // Replace with the desired website URL
+        }
+    </script>
+</body>
+</html>
