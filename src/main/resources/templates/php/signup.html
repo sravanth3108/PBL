@@ -1,0 +1,219 @@
+<body>
+    <header>
+        <h1>Signup here</h1>
+    </header>
+    <main>
+        <form id="login_form" class="form_class" action="signup.php" method="post">
+            <div class="form_div">
+                <p id="success-message"></p>
+                <label>Mail</label>
+                <input class="field_class" name="mail" type="text" placeholder="@gmail.com / @hotmail.com / @yahoo.com " autofocus required>
+                <label >User name</label>
+                <input class="field_class" name="usrName" type="text" placeholder="Must be Unique" autofocus required>
+                <label class="firstlabel">First Name  </label>
+                <label> Last Name </label><br>
+
+                <input id="name" class="field_class" name="fname" type="text" placeholder="Ex: Fellah" autofocus required>
+                
+                <input id="lname" class="field_class" name="lname" type="text" placeholder="Ex: Aziz" autofocus required><br>
+                <label class="pass">Password   </label>
+                <label id="mbl">  Mobile </label><br>
+                
+                <input id="pass" class="field_class" name="password" type="password" placeholder="Minimum 8 chars & include Numbers, symbols" pattern="[a-z]*" required>
+                <input id="mobile" class="field_class" name="mNumber" type="tel" placeholder="Number" autofocus required><br>
+                
+            </div>
+            <div>
+                <button class="submit_class" type="submit" name="signup" onclick="return validarLogin()">Sign up</button>
+            </div>
+          
+        </form>
+    </main>
+   
+    <style>
+        * {
+    padding: 0px;
+    margin: 0px;
+}
+
+
+.field_class.invalid
+{
+    border: 2px solid red;
+    animation: shake 0.2s 2;
+}
+@keyframes shake
+{
+    25%{
+        translate: 6px 0;
+    }
+    50%{
+        translate: -6px 0;
+    }
+    75%{
+        translate: 6px 0;
+    }
+}
+#success-message
+{
+    color: red;
+    text-transform: capitalize;
+}
+.firstLabel {
+    margin-right: 136px;
+}
+
+#name
+{
+    width: 33ch;
+}
+#lname
+{
+ width:30ch;
+}
+#pass{
+    width: 33ch;
+    
+    
+}
+#mbl
+{
+    margin-left: 146px;
+}
+#mobile{
+    width:30ch;
+    
+}
+body {
+    background-color:#006A4E;
+}
+header {
+    background-color: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15vh;
+    box-shadow: 5px 5px 10px rgb(0,0,0,0.3);
+}
+h1 {
+    letter-spacing: 1.5vw;
+    font-family: 'system-ui';
+    text-transform: uppercase;
+    text-align: center;
+}
+main {
+    margin-top: 30;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    height: 75vh;
+    width: 100%;
+    background: url(https://th.bing.com/th/id/R.c68d591d29885114f3ba7e0a2cdbf831?rik=jJ4o3LdNTmXXKA&riu=http%3a%2f%2fwww.nwmissouri.edu%2fmarketing%2fimages%2fdesign%2flogos%2fN-Horiz-G.png&ehk=tgHhZ%2ftigCAe0Pe4JMf%2f17BWEKc48P6%2f15ikBE68Z7E%3d&risl=&pid=ImgRaw&r=0) no-repeat center center;
+    background-size:contain;
+}
+.form_class {
+    margin-left: 4.5cm;
+    width: 500px;
+    padding: 40px;
+    border-radius: 8px;
+    background-color: white;
+    font-family: 'system-ui';
+    box-shadow: 5px 5px 10px rgb(0,0,0,0.3);
+}
+.form_div {
+    text-transform: uppercase;
+}
+.form_div > label {
+    letter-spacing: 3px;
+    font-size: 1rem;
+}
+.info_div {
+    text-align: center;
+    margin-top: 20px;
+}
+.info_div {
+    letter-spacing: 1px;
+}
+.field_class {
+    width: 100%;
+    border-radius: 6px;
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px 0px;
+    text-indent: 6px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-family: 'system-ui';
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+}
+.submit_class {
+    border-style: none;
+    border-radius: 5px;
+    background-color: #006A4E;
+    color: white;
+    padding: 8px 20px;
+    font-family: 'system-ui';
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+    box-shadow: 2px 2px 5px rgb(0,0,0,0.2);
+    cursor: pointer;
+}
+.submit_class:hover
+{
+background-color: #fff;
+color: #000;
+}
+footer {
+    height: 10vh;
+    background-color: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: -5px -5px 10px rgb(0,0,0,0.3);
+}
+footer > p {
+    text-align: center;
+    font-family: 'system-ui';
+    letter-spacing: 3px;
+}
+footer > p > a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+    </style>
+    <script>
+        function validarLogin() {
+            var passwordField = document.getElementById('pass');
+            var isValidPattern = pattern.test(passwordField.value);
+            
+            if (!isValidPattern) {
+                passwordField.classList.add('invalid');
+                return false; // Prevent form submission
+            }
+            
+            return true; // Allow form submission
+        }
+       // const validarLogin = () => {
+  // alert('Make sure all the feilds are correct');
+  
+// }
+    </script> 
+    <script>
+        // Retrieve the success message from the URL query parameter
+        var urlParams = new URLSearchParams(window.location.search);
+        var message = urlParams.get('message');
+    
+        // Display the success message on the page
+        if (message) {
+          var successMessageElement = document.getElementById('success-message');
+          successMessageElement.textContent = message;
+        }
+      </script>
+</body>

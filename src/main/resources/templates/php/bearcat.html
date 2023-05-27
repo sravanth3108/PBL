@@ -1,0 +1,154 @@
+<body>
+    
+    <header>
+        <h1>Welcome Bearcat</h1>
+    </header>
+    <main>
+        <img class="logo" src="https://www.nebraskajuniors.org/wp-content/uploads/2018/09/Northwest-Missouri-State-University.png">
+        <form id="login_form" class="form_class" action="bearcat.html" method="post">
+            <div class="form_div">
+                <label>Student id</label>
+                <input class="field_class" name="SID" type="text" placeholder="SXXXXXX@nwmissouri.edu" autofocus required>
+                <label>Password:</label>
+                <input id="pass" class="field_class" name="bPwd" type="password" placeholder="PWD Case Sensitive" required>
+                <button class="submit_class" type="submit" form="login_form" name="BLogin" onclick="return validarLogin()">Go Bearcat</button>
+                
+                
+            </div>
+        
+            
+        </form>
+        
+    </main>
+    
+    <footer>
+        <p>Developed by Group2 <a href="#">Northwest&trade;</a></p>
+    </footer>
+    <style>
+        * {
+    padding: 0px;
+    margin: 0px;
+}
+body {
+    background-color: #006A4E;
+    color: white;
+}
+header {
+    background-color: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15vh;
+    box-shadow: 5px 5px 10px rgb(0,0,0,0.3);
+}
+h1 {
+    letter-spacing: 1.5vw;
+    font-family: 'system-ui';
+    text-transform: uppercase;
+    text-align: center;
+}
+.logo
+{
+    position: absolute;
+ height: 120;
+margin-top: 5cm;
+margin-right: 2cm;
+ display:block;
+ 
+ 
+}
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 75vh;
+    width: 100%;
+    background: url(https://th.bing.com/th/id/R.c68d591d29885114f3ba7e0a2cdbf831?rik=jJ4o3LdNTmXXKA&riu=http%3a%2f%2fwww.nwmissouri.edu%2fmarketing%2fimages%2fdesign%2flogos%2fN-Horiz-G.png&ehk=tgHhZ%2ftigCAe0Pe4JMf%2f17BWEKc48P6%2f15ikBE68Z7E%3d&risl=&pid=ImgRaw&r=0) no-repeat center center;
+    background-size:contain;
+}
+.form_class {
+
+    margin-left: 6cm;
+    width: 500px;
+    padding: 40px;
+    border-radius: 8px;
+    background-color: white;
+    font-family: 'system-ui';
+    box-shadow: 5px 5px 10px rgb(0,0,0,0.3);
+}
+.form_div {
+    text-transform: uppercase;
+    color: black;
+}
+.form_div > label {
+    letter-spacing: 3px;
+    font-size: 1rem;
+}
+.info_div {
+    text-align: center;
+    margin-top: 20px;
+}
+.info_div {
+    letter-spacing: 1px;
+}
+.field_class {
+    width: 100%;
+    border-radius: 6px;
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px 0px;
+    text-indent: 6px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-family: 'system-ui';
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+}
+.submit_class {
+
+    border-style: none;
+    border-radius: 5px;
+    background-color:  #006A4E;
+    color:white;
+    padding: 8px 20px;
+    font-family: 'system-ui';
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+    box-shadow: 2px 4px 5px rgb(0,0,0,0.4);
+    cursor: pointer;
+}
+.submit_class:hover
+{
+background-color: white;
+color: black;
+}
+footer {
+    height: 10vh;
+    background-color: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: -5px -5px 10px rgb(0,0,0,0.3);
+}
+footer > p {
+    text-align: center;
+    font-family: 'system-ui';
+    letter-spacing: 3px;
+}
+footer > p > a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+    </style>
+    <script>
+        const validarLogin = () => {
+  alert('Teste');
+}
+    </script>
+</body>

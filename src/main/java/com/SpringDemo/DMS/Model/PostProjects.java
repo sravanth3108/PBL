@@ -9,11 +9,19 @@ public class PostProjects {
 	@Id
 	private String projName;
 	private String projDesc;
+	private String projDescfull;
 	private String projReq;
 	private String email;
 	private String phone;
+	
 	public String getProjName() {
 		return projName;
+	}
+	public String getProjDescfull() {
+		return projDescfull;
+	}
+	public void setProjDescfull(String projDescfull) {
+		this.projDescfull = projDescfull;
 	}
 	public void setProjName(String projName) {
 		this.projName = projName;
@@ -43,17 +51,18 @@ public class PostProjects {
 		this.phone = phone;
 	}
 	public PostProjects() {}
-	public PostProjects(String projName, String projDesc, String projReq, String email, String phone) {
+	public PostProjects(String projName, String projDesc,String projDescfull, String projReq, String email, String phone) {
 		super();
 		this.projName = projName;
 		this.projDesc = projDesc;
 		this.projReq = projReq;
 		this.email = email;
 		this.phone = phone;
+		this.projDescfull = projDescfull;
 	}
 	@Override
 	public String toString() {
-		return "PostProjects [projName=" + projName + ", projDesc=" + projDesc + ", projReq=" + projReq + ", email="
+		return "PostProjects [projName=" + projName + ", projDesc=" + projDesc +"projDescfull=" + projDescfull+ ", projReq=" + projReq + ", email="
 				+ email + ", phone=" + phone + "]";
 	}
 	

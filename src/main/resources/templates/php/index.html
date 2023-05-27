@@ -1,0 +1,88 @@
+
+<head>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+  </head>
+<body>
+    
+    <header>
+        <h1>PBL Project Explorer</h1>
+    </header>
+    <main>
+        
+        
+        <img src="https://www.nebraskajuniors.org/wp-content/uploads/2018/09/Northwest-Missouri-State-University.png" class="logo">
+        <form id="login_form" class="form_class" action="login.php" method="post">
+            <p id="success-message"></p>
+            <div class="form_div">
+                <label>Login:</label>
+                <input class="field_class" type="text" name="mail" placeholder="User ID" autofocus>
+                <label>Password:</label>
+                <span id="togglePassword" onclick="togglePasswordVisibility()">
+                  <i class="fas fa-eye"></i>
+                </span>
+                
+                <input id="password" class="field_class" name="password" type="password" placeholder="PWD Case Sensitive">
+                <button class="submit_class" type="submit" name="loginBtn">Login</button>
+                
+                
+            </div>
+            <div class="bearcat_div">
+                <button class="submit_class" formaction="bearcat.html">Bearcat?</button>
+              
+            </div>
+            
+            <div class="info_div">
+                <p>Haven't you registered yet? <a href="signup.html">Sign up!</a></p>
+            </div>
+            
+        </form>
+        <div id="preloader">
+            <div id="loader">
+              <img src="https://www.pinclipart.com/picdir/big/106-1069842_file-northwest-missouri-state-bearcats-logo-svg-wikipedia.png" height="100px" alt="Loader">
+              <div class="lText" ><b>Loading...</b></div>
+            </div>
+          </div>
+    </main>
+    <footer>
+        <p>Developed by Group2 <a href="#">NWMSU&trade;</a></p>
+    </footer>
+    
+
+    <script>
+        const validarLogin = () => {
+  alert('Teste');
+}
+    </script>
+    <script>
+     window.addEventListener('load', function() {
+  var preloader = document.getElementById('preloader');
+  preloader.classList.add('hide');
+});
+
+    </script>
+    <script>
+
+function togglePasswordVisibility() {
+  var passwordInput = document.getElementById("password");
+  var toggleIcon = document.getElementById("togglePassword");
+
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    toggleIcon.innerHTML = '<i class="fas fa-eye-slash"></i>';
+  } else {
+    passwordInput.type = "password";
+    toggleIcon.innerHTML = '<i class="fas fa-eye"></i>';
+  }
+}
+        // Retrieve the success message from the URL query parameter
+        var urlParams = new URLSearchParams(window.location.search);
+        var message = urlParams.get('message');
+    
+        // Display the success message on the page
+        if (message) {
+          var successMessageElement = document.getElementById('success-message');
+          successMessageElement.textContent = message;
+        }
+      </script>
+</body>

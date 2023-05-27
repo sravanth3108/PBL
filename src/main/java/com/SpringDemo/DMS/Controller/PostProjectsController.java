@@ -37,7 +37,7 @@ public class PostProjectsController {
 
     @PostMapping("/save")
     public ModelAndView postProjectsForm(PostProjects pps) {
-        System.out.println(pps.toString());
+       
         projectRepo.save(pps);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("post-projects.html"); // Redirect to the viewprojects endpoint
@@ -49,7 +49,7 @@ public class PostProjectsController {
         List<PostProjects> project = projectRepo.findAll();
        
             model.addAttribute("projects", project);
-            System.out.println(project);
+         
 
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("view-projects.html"); // Redirect to the viewprojects endpoint
