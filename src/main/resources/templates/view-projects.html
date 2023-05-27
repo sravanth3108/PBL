@@ -126,27 +126,15 @@
         }
     </style>
     <script>
-    function sendProjectName(projectName) {
-    	  var xhr = new XMLHttpRequest();
-    	  xhr.open("POST", "/projectDetails", true);
-    	  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    	  xhr.onreadystatechange = function() {
-    	    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-    	      // Handle the response from the server if needed
-    	    }
-    	  };
-    	  xhr.send(JSON.stringify({ projectName: projectName }));
+    function selectProject(element) {
+    	  var projectName = element.getAttribute('data-project-name');
+    	  var url = '/projectDetails?name=' + projectName;
+    	  window.location.href = url;
+    	  
+    	  // Rest of your code
     	}
-
-    	document.addEventListener("DOMContentLoaded", function() {
-    	  var projectNameElement = document.getElementById("project-name");
-    	  projectNameElement.addEventListener("click", function() {
-    	    var projectName = projectNameElement.textContent;
-    	    sendProjectName(projectName);
-    	  });
-    	});
-
     
+
     </script>
 </head>
 
@@ -168,7 +156,7 @@
       </a>
     </li>
     <li>
-      <a href="/" >
+      <a href="/postProjects" >
         <i class='bx bx-box' ></i>
         <span class="links_name">Upload projects</span>
       </a>
@@ -192,11 +180,12 @@
     
     
     <div class="project-container">
-       <div th:each="project : ${projects}" class="partition">
-    <a id="pjname" ><div class="partition1" >
-       <h1 id="project-name" class="project-name" th:text="${project.projName}" onclick="window.location='/projectDetails'"></h1>
-        </div> <!-- Add class="project-name" -->
-    </a>
+     <div th:each="project : ${projects}" class="partition">
+  <a th:attr="data-project-name=${project.projName}" onclick="selectProject(this)">
+  <div class="partition1">
+    <h1 class="project-name" th:text="${project.projName}"></h1>
+  </div>
+  </a>
         
         <div class="partition2">
             <div class="partition-content">
