@@ -14,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.SpringDemo.DMS.Model.PostProjects;
 import com.SpringDemo.DMS.Repository.PostProjectsRepository;
 
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 public class PostProjectsController {
