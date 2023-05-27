@@ -21,13 +21,13 @@ public class PostProjectsController {
     private PostProjectsRepository projectRepo;
     private String projectName;
 
-    @GetMapping("/")
+    @GetMapping("user")
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("userProfile.html");
         return modelAndView;
     }
-    @GetMapping("/postProjects")
+    @GetMapping("postProjects")
     public ModelAndView postProjects() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("post-projects.html");
@@ -35,7 +35,7 @@ public class PostProjectsController {
     }
     
 
-    @PostMapping("/save")
+    @PostMapping("save")
     public ModelAndView postProjectsForm(PostProjects pps) {
        
         projectRepo.save(pps);
@@ -44,7 +44,7 @@ public class PostProjectsController {
         return modelAndView;
     }
     
-    @GetMapping("/viewProjects")
+    @GetMapping("viewProjects")
     public  ModelAndView viewProjects(Model model) {
         List<PostProjects> project = projectRepo.findAll();
        
@@ -57,7 +57,7 @@ public class PostProjectsController {
     }
     
     
-    @GetMapping("/projectDetails")
+    @GetMapping("projectDetails")
     public ModelAndView getProjectDetails(@RequestParam("name") String projectName, Model model) 
     {
     	PostProjects project = projectRepo.findById(projectName).orElse(null);
