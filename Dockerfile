@@ -5,5 +5,5 @@ RUN mvn clean package -Pprod -DskipTests
  
 
 FROM openjdk:17-jdk-slim
-COPY --from=build /target/PBL-docker.jar DogsManagementSystem.jar
+COPY --from=build /target/PBL-docker.jar PBL-docker.jar
 CMD ["java", "-jar", "PBL-docker.jar"]
