@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.8-openjdk-21 AS build
+FROM maven:3.9.4-openjdk-21 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -Pprod -DskipTests
