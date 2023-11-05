@@ -1,0 +1,227 @@
+* {
+    font-family: 'system-ui';
+}
+.project-container {
+    border-radius: 18px;
+    width: 100%;
+    margin-top:10px;
+    padding: 12px;
+    margin-left: 6.2cm;
+}
+.partition {
+    position: fixed;
+    border-radius: 8px;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-left:20px;
+    margin-bottom: 20px;
+    display: block;
+    top:18%;
+    height: 80%; /* Set a percentage of the parent container height */
+    max-height: 800px; /* Set a maximum height if needed */
+    overflow-y: auto;
+    width:80%;
+    
+}
+.partition1 {
+    padding-top: 0px;
+    padding-left: 20px;
+    padding-bottom: 0px;
+    border-bottom: 2px solid #000;
+    margin-bottom: 12px;
+}
+.partition2 {
+    border-radius: 4px;
+    background-color: white;
+    padding-top: 0px;
+    padding-left: 20px;
+    padding-bottom: 40px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    margin : 15px;	
+}
+.partition3 {
+    border-radius: 4px;
+    background-color: t ransparent;
+    position: relative;
+    border: 0px;
+}
+.partition h2 {
+    margin: 0;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.partition-content {
+    margin-top: 10px;
+}
+.star-project-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.star-project-user button {
+    padding: 5px 10px;
+    border-radius: 10px;
+    background-color: red;
+}
+#h2 {
+    background-color: #006A4E;
+    color: #f0f0f0;
+    padding: 20px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-left: 2cm;
+    letter-spacing: 3px;
+    box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.3);
+    position:fixed;
+    width:100%;
+}
+#commentText
+{
+    width: 90%;
+    padding-top: 10px;
+    padding-left: 20px;
+   border-radius: 8px;
+}
+main {
+    align-items: center;
+    justify-content: center;
+    height: 75vh;
+    width: 100%;
+    background-size: contain;
+    display: block;
+}
+.logo {
+    position: fixed;
+    display: flex;
+    height: 70px;
+    width: 70px;
+    top: 30px;
+}
+.logo:hover {
+    left: -6px;
+    top: 22px;
+    height: 90px;
+    width: 90px;
+}
+.comment {
+    margin-left: 20px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+.comment .user-info {
+    display: flex;
+    align-items: center;
+}
+.comment .user-info img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.comment .user-info .username {
+    font-weight: bold;
+}
+.reply-form {
+    margin-top: 10px;
+    
+    
+}
+.reply-form textarea {
+    width: 90%;
+    border-radius: 10px;
+    border: transparent;
+    
+}
+.reply-form button {
+    margin-top: 5px;
+    border-radius: 10px;
+    background-color: #006A4E;
+    color: #fff;
+    padding: 5px 10px;
+}
+.partition2 {
+    overflow-y: auto;
+    max-height: 300px; /* Set the maximum height for the comments container */
+}
+.button {
+    background-color: #4CAF50; /* Green */
+     border: none;
+    color: white;
+    padding: 15px 32px;
+     text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 14px;
+    margin: 4px 2px;
+     cursor: pointer;
+     border-radius: 5px;
+}
+
+.button1 {background-color: #008CBA; float:right} /* Blue */
+/*.button3 {background-color: #f44336;} /* Red */ 
+/*.button {background-color: #e7e7e7; color: black;} /* Gray */ 
+.button2 {background-color: #555555;float:right;top:0px} /* Black */
+/* Add animation styles for the sendRequest form */
+@keyframes slideIn {
+from {
+transform: translateY(100%);
+}
+to {
+transform: translateY(0);
+}
+}
+
+@keyframes slideOut {
+from {
+transform: translateY(0);
+}
+to {
+transform: translateY(100%);
+}
+}
+
+#sendRequestForm {
+position: fixed;
+top: 275px ;
+right: 50px;
+width: 30%;
+padding: 20px;
+background-color: #fff;
+box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+display: none;
+border-radius:10px;
+animation: slideIn 0.3s ease-in-out;
+}
+
+#sendRequestForm.show {
+animation: slideIn 0.3s ease-in-out;
+display: block;
+}
+
+#sendRequestForm.hide {
+animation: slideOut 0.3s ease-in-out;
+display: none;
+}
+
+/* Additional styling for the form inputs and buttons */
+#sendRequestForm input[type="text"] {
+width: calc(100% - 20px);
+margin-bottom: 15px;
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+font-size: 16px;
+}
+
+#sendRequestForm button {
+margin-top: 10px;
+margin-right: 10px;
+}

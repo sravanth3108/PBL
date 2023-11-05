@@ -1,172 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:300,400,600i&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - PBL</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        html body {
-            background-color: lightgreen;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        .container-fluid {
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        .profile-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            margin-top: 90px;
+            margin-left: 100px;
+            width: 120%;
+        }
+
+        .container {
+            margin-left: 210px;
+        }
+
+        .projects {
+            width: 1100px;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .profile-details {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .detail {
+            margin: 0 20px;
+        }
+
+        .card {
+            border: black;
+            border-radius: 8px;
+            transition: box-shadow 0.3s;
+            width: 100%;
+            margin:2px;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 110px;
+            left: 0;
+            height: 87%;
+            width: 240px;
+            background: #006a4e;
+            transition: all 0.5s ease;
+            radius: 4px;
+        }
+
+        .sidebar.active {
+            width: 60px;
+        }
+
+        .sidebar .logo-details {
+            height: 80px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
         }
 
-       
-        .infocardContainer {
-            display: flex;
-            height: 200px;
-            width: 500px;
-            border-radius: 100px;
-            background: linear-gradient(121deg, #fff 13%, #006A4E 100%);
-            transition: all 500ms ease-in;
-            margin: auto;
+        .sidebar .logo-details i {
+            font-size: 28px;
+            font-weight: 500;
+            color: #fff;
+            min-width: 60px;
+            text-align: center;
         }
 
-        .infocardContainer:hover {
-            width: 600px;
-            border-radius: 100px 10px 100px 100px;
-            transition: all 1s ease-out;
-        }
-
-        .infocardContainer div {
-            color: white;
-            flex-shrink: 1;
-            padding: 20px;
-        }
-
-        .infocardContainer div h2 {
-            font-family: 'Fira Sans Condensed', sans-serif;
-            font-weight: 600;
-            font-style: italic;
-            margin-top: 0;
-        }
-
-        .infocardContainer div h4 {
-            font-family: 'Fira Sans Condensed', sans-serif;
-            font-weight: 400;
+        .sidebar .nav-links {
             margin-top: 10px;
         }
 
-        .infocardContainer div a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .infocardContainer #main {
-            height: 200px;
-            width: 200px;
-            padding-right: 10px;
-            border-radius: 100%;
-            flex-shrink: 0;
-            object-fit: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .infocardContainer #main img {
-            height: 180px;
-            width: 180px;
-            border: 10px solid white;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .infocardContainer #textbois {
+        .sidebar .nav-links li {
             position: relative;
+            list-style: none;
+            height: 50px;
         }
 
-        .infocardContainer #textbois #hotlinks {
-            max-width: 60%;
-            max-height: 30px;
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
+        .sidebar .nav-links li a {
+            height: 100%;
+            width: 100%;
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.4s ease;
+        }
+
+        .sidebar .nav-links li a.active {
+            background: #2BD47D;
+        }
+
+        .sidebar .nav-links li a:hover {
+            background: green;
+        }
+
+        .sidebar .nav-links li i {
+            min-width: 60px;
+            text-align: center;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .sidebar .nav-links li a .links_name {
+            color: #fff;
+            font-size: 15px;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .sidebar .nav-links .log_out {
+            position: absolute;
+            bottom: 0;
             width: 100%;
         }
 
-        .infocardContainer #textbois #hotlinks img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: white;
+        #h2 {
+            position: fixed;
+            width: 95%;
+            background-color: #006A4E;
+            color: #f0f0f0;
+            padding: 20px;
+            padding-top: 20px;
+            padding-bottom: 30px;
+            text-transform: uppercase;
+            text-align: center;
+            margin-left: 2cm;
+            margin-top: 12px;
+            letter-spacing: 3px;
+            box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.3);
+            top: 0px;
+            z-index: 1200;
+        }
+
+        .logo {
+            position: fixed;
+            display: flex;
+            height: 70px;
+            width: 70px;
+            top: 30px;
+        }
+
+        .logo:hover {
+            left: -6px;
+            top: 22px;
+            height: 90px;
+            width: 90px;
         }
     </style>
+
+    <script>
+
+
+    
+    function deleteProject(projName) {
+        // Send DELETE request to the server
+        fetch('/deleteProject?name=' + projName, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Project' + projName +' has been deleted') // Parse response body as text
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(data => {
+            // Display alert with the response message
+            alert(data);
+            // Reload the page to reflect the changes
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error occurred while deleting the project.');
+        });
+    }
+    function uploadProjects()
+      {
+        var userName = document.getElementById('userName').textContent;
+        var  url = "/postProjects?mail="+userName;
+        console.log(url);
+        window.location.href=url;
+
+
+      }
+		function viewRequests(projName) {
+        console.log(projName);
+        var requestsDiv = document.getElementById('requests-' + projName);
+        requestsDiv.style.display = 'block';
+        var count =0;
+    
+        // Fetch requests using AJAX
+        fetch('/getRequests?projName=' + projName)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('No requests found for the given project');
+                }
+            })
+            .then(data => {
+                // Populate the requestsDiv with fetched data
+                var html = '';
+                if (data.length === 0) {
+                    html = '<p>No requests found for the given project</p>';
+                } else {
+                    data.forEach(request => {
+                        count=count+1;
+                        html += `<div class="card">
+                                    <div class="card-body">
+                                        <h5> <u>Request ${count} </u></h5>
+                                        <h6 class="card-title">${request.contactName}</h6>
+                                        <p class="card-text">${request.contactEmail}</p>
+                                    </div>
+                                </div>`;
+                    });
+                }
+                requestsDiv.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                requestsDiv.innerHTML = '<br><p>There are no requests for this project</p>';
+            });
+    }
+    
+    </script>
+
 </head>
 
 <body>
-<div class="container-fluid" id="webhead" style="position:absolute,">
-        <div class="hlogo left" id="icon">
-            <a href="https://www.nwmissouri.edu" title="Return to Northwest">
-                <img alt="Northwest Missouri State University" height="79px"
-                    src="https://www.nwmissouri.edu/layout/v2019/images/svg/logo-n.svg" width="74px">
-            </a>
-        </div>
-        <div class="deptTitle left" id="title" style="float:left">
-            <a href="https://www.nwmissouri.edu">Northwest Missouri State University</a>
-        </div>
-    </div>
 
-<div class="container-fluid">
-    <div class="sidebar left">
-        <ul class="nav-links">
-            <li>
-                <a href="/" class="active">
-                    <i class='bx bx-grid-alt'></i>
-                    <span class="links_name">Home</span>
-                </a>
-            </li>
-            <li>
-                <a href="postProjects">
-                    <i class='bx bx-box'></i>
-                    <span class="links_name">Upload projects</span>
-                </a>
-            </li>
-            <li>
-                <a href="viewProjects">
-                    <i class='bx bx-list-ul'></i>
-                    <span class="links_name">View Projects</span>
-                </a>
-            </li>
-            <li class="log_out">
-                <a href="#">
-                    <i class='bx bx-log-out'></i>
-                    <span class="links_name">Log out</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="infocardContainer">
-        <div id="main">
-            <img src="https://pbs.twimg.com/media/DR77geRU8AACVw4.jpg:large" alt="Profile Image">
+    <header>
+        <h2 id="h2">User Profile Page</h2>
+        <div class="logo">
+            <img src="https://avatars0.githubusercontent.com/u/44843452?s=280&v=4">
         </div>
-        <div id="textbois">
-            <h2>Bobby Bearcat</h2>
-            <h4>Mascot of Northwest</h4>
-            <a href="mailto:bobbybearcat@gmail.com">bobbybearcat@gmail.com</a>
-            <div id="hotlinks">
-                <a href="#">
-                    <img id="codepenio" src="https://blog.codepen.io/wp-content/uploads/2012/06/Button-Fill-Black-Small.png" alt="Link 1">
-                </a>
-                <a href="#">
-                    <img id="codepenio" src="https://blog.codepen.io/wp-content/uploads/2012/06/Button-Fill-Black-Small.png" alt="Link 2">
-                </a>
-                <a href="#">
-                    <img id="codepenio" src="https://blog.codepen.io/wp-content/uploads/2012/06/Button-Fill-Black-Small.png" alt="Link 3">
-                </a>
+
+        <div class="container-fluid">
+            <div class="sidebar left" id="viewprjsdbr">
+                <ul class="nav-links">
+                    <li>
+                        <a href="/" class="active">
+                            <i class='bx bx-grid-alt'></i>
+                            <span class="links_name">Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick = "uploadProjects()">
+                            <i class='bx bx-box'></i>
+                            <span class="links_name">Upload projects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            <i class='bx bx-list-ul'></i>
+                            <span class="links_name" onclick="window.location='viewProjects'">View Projects</span>
+                        </a>
+                    </li>
+
+                    <li class="log_out">
+                        <a href="#">
+                            <i class='bx bx-log-out'></i>
+                            <span class="links_name">Log out</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="container mt-5">
+        <div class="row">
+
+            <!-- Profile Section -->
+            <div class="col-md-12">
+                <div class="profile-container text-center p-4 mx-auto" style="max-width: 600px;">
+                    <img class="profile-picture mb-3"
+                        src="https://www.nwmissouri.edu/media/news/2022/10/images/221023-bobby-bearcat-statue-dedication-fall2022-la-227.jpg"
+                        alt="Profile Picture">
+                    <h2 class="profile-name" id="userName" th:text = "${username}">/h2>
+                    <p class="profile-bio">Aspiring Developer | Lifelong Learner | Coding Enthusiast</p>
+                    <div class="profile-details d-flex justify-content-center">
+                        <div class="detail">
+                            <div class="detail-label">Courses Taken</div>
+                            <div class="detail-value">12</div>
+                        </div>
+                        <div class="detail">
+                            <div class="detail-label">Projects Uploaded</div>
+                            <div class="detail-value">5</div>
+                        </div>
+                        <div class="detail">
+                            <div class="detail-label">Level</div>
+                            <div class="detail-value">Beginner</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Section -->
+            <div class="col-md-12 projects">
+                <br>
+                <h2 class="mb-4 text-center">My Projects</h2>
+                <div class="row justify-content-center">
+                    <!-- Loop through projects -->
+                    <div th:each="project : ${projects}" class="col-md-8 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${project.projName}"></h5>
+                                <p class="card-text" th:text="${project.projDesc}"></p>
+                                <!-- Other project details -->
+                                <a th:href="@{'/editProjects?name=' + ${project.projName}}"
+                                    class="btn btn-primary btn-sm mr-2">Edit</a>
+                                <a th:href="@{'/deleteProject?name=' + ${project.projName}}"
+                                    class="btn btn-danger btn-sm">Delete</a>
+                                    <a class="btn btn-info btn-sm position-relative"
+                                    th:attr="data-projectname=${project.projName}"
+                                    th:style="'background-color: CornFlowerBlue; border-color: CornFlowerBlue;margin-left:10px'"
+                                    onclick="viewRequests(this.getAttribute('data-projectname'))">
+                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-danger"
+                                           th:text="${project.requestCount}"
+                                           style="margin-left: 0px; margin-top: 5px;margin-right:5px; font-size: 12px;"></span>
+                            &nbsp &nbsp &nbsp View Requests
+                                 </a>
+                                 
+                                 <div th:id="'requests-' + ${project.projName}" class="col-md-12" style="display:none">
+                                     <!-- Requests for the specific project will be displayed here -->
+                                 </div>
+                                 </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
 </body>
+
 </html>

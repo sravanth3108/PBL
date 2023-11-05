@@ -6,31 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
-
-    <style>
-        /* Add custom CSS styles for responsiveness */
-        @media (max-width: 768px) {
-            .hlogo {
-                text-align: center;
-                margin-bottom: 10px;
-            }
-
-            .deptTitle {
-                text-align: center;
-            }
-
-            .sidebar {
-                display: none;
-            }
-
-            .container-fluid {
-                margin-top: 20px;
-            }
-        }
-    </style>
 </head>
 
 <body class="bdy">
@@ -46,13 +22,55 @@
         </div>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
     <script>
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var phonePattern = /^\d{10}$/;
+
         function show() {
             document.getElementById("projectForm").style.display = 'block';
             document.getElementById("postInfo").style.display = 'none';
             var buttons = document.getElementsByClassName("postprojectBTN");
             for (var i = 0; i < buttons.length; i++) {
                 buttons[i].style.display = 'none';
+            }
+        }
+
+        function formValidation(event) {
+            var projName = document.getElementById('projName').value;
+            var projReq = document.getElementById('projReq').value;
+            var projDesc = document.getElementById('projDesc').value;
+            var projDescfull = document.getElementById('projDescfull').value;
+            var projExp = document.getElementById('projExp').value;
+            var email = document.getElementById('email').value;
+            var phone = document.getElementById('phone').value;
+            var expiryDate = document.getElementById('expiryDate').value;
+            var projType = document.querySelector('input[name="projType"]:checked');
+
+            var isValid = true;
+
+            if (projName === '' || projReq === '' || projDesc === '' || projDescfull === '' || projExp === '' || email === '' || phone === '' || expiryDate === '' || projType === null) {
+                alert('All fields are required.');
+                isValid = false;
+            } else if (isNaN(projExp) || projExp <= 0) {
+                alert('Please enter a valid experience (in months).');
+                isValid = false;
+            } else if (!emailPattern.test(email)) {
+                alert('Please enter a valid email address.');
+                isValid = false;
+            } else if (!phonePattern.test(phone)) {
+                alert('Please enter a valid 10-digit phone number.');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                event.preventDefault();
+            } else {
+                var form = document.getElementById("projectForm");
+                //form.action = "/save"; // Set the form action dynamically
+                form.submit();
             }
         }
     </script>
@@ -79,7 +97,7 @@
                     </a>
                 </li>
                 <li class="log_out">
-                    <a href="#">
+                    <a href="http://localhost:8080/projects">
                         <i class='bx bx-log-out'></i>
                         <span class="links_name">Log out</span>
                     </a>
@@ -88,63 +106,63 @@
         </div>
         <div class="welcome">
             <h1>Welcome User</h1>
-        
+        </div>
         <div class="postprojectBTN Button" onclick="show()">Post a New Project</div>
-    </div>
 
-    <div class="container container-fluid postInfo" id="postInfo">
-        <p>Welcome to the NW PBL Project Explorer<br><h3>Professional-Based Learning</h3><br>The NW PBL Project Explorer
-            is a platform designed to facilitate professional-based learning (PBL) projects for faculties and students. It
-            serves as a central hub where users can post, explore, and discuss potential PBL projects.<br><h3>Sponsorship and
-                Implementation</h3><br>As the CITE office, we have the opportunity to select and sponsor promising PBL
-            projects from the platform. If a project aligns with our objectives, we can provide support and resources to
-            bring it to life.<br><h3>Start Exploring PBL Projects Today</h3><br> Join the NW PBL Project Explorer to
-            discover exciting professional-based learning opportunities, connect with like-minded individuals, and
-            contribute to meaningful projects. Let's collaborate and make a real impact</p>
-    </div>
-    </div>
+        <div class="container container-fluid postInfo" id="postInfo">
+            <p>Welcome to the NW PBL Project Explorer<br><h3>Professional-Based Learning</h3><br>The NW PBL Project Explorer
+                is a platform designed to facilitate professional-based learning (PBL) projects for faculties and students. It
+                serves as a central hub where users can post, explore, and discuss potential PBL projects.<br><h3>Sponsorship and
+                    Implementation</h3><br>As the CITE office, we have the opportunity to select and sponsor promising PBL
+                projects from the platform. If a project aligns with our objectives, we can provide support and resources to
+                bring it to life.<br><h3>Start Exploring PBL Projects Today</h3><br> Join the NW PBL Project Explorer to
+                discover exciting professional-based learning opportunities, connect with like-minded individuals, and
+                contribute to meaningful projects. Let's collaborate and make a real impact</p>
+        </div>
 
-    <div class="container-fluid" >
-     <form id="projectForm" method="post" style ="display:none" action="/save">
-  <div class="form-group">
-    <label for="projName">Project Name</label>
-    <input type="text" id="projName" name="projName" placeholder="Project name.." required>
-  </div>
+        <div class="container-fluid">
+            <form id="projectForm" style="display:none" method="post" onsubmit="formValidation(event)">
+                <label for="projName">Project Name *</label>
+                <input type="text" id="projName" name="projName" placeholder="Project name.." class="required">
 
-  <div class="form-group">
-    <label for="projReq">Project Requirements</label>
-    <input type="text" id="projReq" name="projReq" placeholder="Enter project requirements.." required>
-  </div>
+                <label for="projReq">Project Requirements *</label>
+                <input type="text" id="projReq" name="projReq" placeholder="Enter project requirements.." class="required">
 
-  <div class="form-group">
-    <label for="projDesc">Short Description</label>
-    <input type="text" id="projDesc" name="projDesc" placeholder="Enter short Description.." required>
-  </div>
+                <label for="projDesc">Short Description *</label>
+                <input type="text" id="projDesc" name="projDesc" placeholder="Enter short Description.." class="required">
 
-  <div class="form-group">
-    <label for="projDescfull">Full Description</label>
-    <textarea id="projDescfull" name="projDescfull" placeholder="Enter the full Description.." required></textarea>
-  </div>
+                <label for="projDescfull">Full Description *</label>
+                <input type="text" id="projDescfull" name="projDescfull" placeholder="Enter the full Description.." class="required">
 
-  <div class="form-group">
-    <label for="experience">Enter your experience</label>
-    <input type="number" id="experience" name="experience" placeholder="Enter your experience related to the project" required>
-  </div>
+                <label for="experience">Enter your experience(In Months) </label>
+                <br>
+                <input type="number" id="projExp" name="projExp" placeholder="Enter your experience related to project" class="required">
+                <br>
 
-  <div class="form-group">
-    <label for="email">Email to contact</label>
-    <input type="email" id="email" name="email" placeholder="Enter your contact email.." required>
-  </div>
+                <label for="keywords">Keywords </label>
+                <br>
+                <input type="text" id="keywords" name="keywords" placeholder="Enter keywords to categorize the projects" class="required">
+                <br>
 
-  <div class="form-group">
-    <label for="phone">Contact number</label>
-    <input type="tel" id="phone" name="phone" placeholder="Enter your contact number.." required>
-  </div>
+                <label for="email">Email to contact</label>
+                <input type="text" id="email" name="email" placeholder="Enter your contact email.." class="required">
 
-  <div class="form-group">
-    <input type="submit" value="Submit">
-  </div>
-</form>
+                <label for="phone">Contact number</label><br>
+                <input type="number" id="phone" name="phone" placeholder="Enter your contact number.." class="required">
+
+                <label for="expiryDate">Project Expiry Date</label><br>
+                <input type="date" id="expiryDate" name="expiryDate" placeholder="Enter project expiry date" class="required"><br>
+
+                <b>Select the project type:</b>
+                <br>
+                <input type="radio" id="private" name="projType" value="Private">
+                <label for="private">Private</label><br>
+                <input type="radio" id="public" name="projType" value="Public">
+                <label for="public">Public</label><br>
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
     </div>
 </body>
 

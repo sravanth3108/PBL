@@ -37,15 +37,6 @@
                 console.log('Toggle switch is ON');
             }
         }
-
-        function searchProjects()
-        {
-            
-            var projectName = document.getElementById("search").value;
-            var url = '/searchProjects?keywords=' + projectName;
-            window.location.href =url;
-
-        }
     </script>
 </head>
 
@@ -88,11 +79,7 @@
             </ul> 
         </div>
     </div>
-    <div class="container searchContent">
-        <input type="text" id="search">
-        <button id="searchButton" onclick = " searchProjects()">Search</button>
-    </div>
-
+    
     <div class="project-container" >
       
   <div class="custom-checkbox">

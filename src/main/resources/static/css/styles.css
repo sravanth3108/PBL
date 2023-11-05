@@ -1,0 +1,199 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+body {
+    background-color:#006A4E
+}
+header {
+    background-color: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15vh;
+    box-shadow: 5px 5px 10px rgb(0,0,0,0.3);
+}
+h1 {
+    letter-spacing: 1.5vw;
+    font-family: 'system-ui';
+    text-transform: uppercase;
+    text-align: center;
+}
+.logo
+{
+ position: absolute;
+ height: 120;
+ margin-top: 3.8cm;
+ margin-right: 2cm;
+ display:flex;
+ 
+ 
+}
+main {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 75vh;
+    width: 100%;
+    background: url(https://th.bing.com/th/id/R.c68d591d29885114f3ba7e0a2cdbf831?rik=jJ4o3LdNTmXXKA&riu=http%3a%2f%2fwww.nwmissouri.edu%2fmarketing%2fimages%2fdesign%2flogos%2fN-Horiz-G.png&ehk=tgHhZ%2ftigCAe0Pe4JMf%2f17BWEKc48P6%2f15ikBE68Z7E%3d&risl=&pid=ImgRaw&r=0) no-repeat center center;
+    background-size:contain;
+}
+.form_class, login {
+    
+    margin-left: 6cm;
+    width: 500px;
+    padding: 40px;
+    border-radius: 8px;
+    background-color: white;
+    font-family: 'system-ui';
+    box-shadow: 5px 5px 10px rgb(0,0,0,0.3);
+}
+.form_div {
+    text-transform: uppercase;
+    
+}
+.form_div > label {
+    letter-spacing: 3px;
+    font-size: 1rem;
+}
+.info_div, .admin_div {
+    text-align: center;
+    margin-top: 20px;
+}
+.info_div {
+    letter-spacing: 1px;
+}
+.field_class {
+    width: 100%;
+    border-radius: 6px;
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px 0px;
+    text-indent: 6px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-family: 'system-ui';
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+}
+.submit_class {
+
+    border-style: none;
+    border-radius: 5px;
+    background-color:  #006A4E;
+    color: #fff;
+    padding: 8px 20px;
+    font-family: 'system-ui';
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+    box-shadow: 2px 4px 5px rgb(0,0,0,0.4);
+    cursor: pointer;
+}
+.submit_class:hover
+{
+background-color: #fff;
+color: #000;
+}
+footer {
+    height: 10vh;
+    background-color: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: -5px -5px 10px rgb(0,0,0,0.3);
+}
+footer > p {
+    text-align: center;
+    font-family: 'system-ui';
+    letter-spacing: 3px;
+}
+footer > p > a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+.preBg
+{
+    background-color: #fff;
+}
+.lText{
+    margin-top: 5px;
+    margin-left: 13.5px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-style:unset;
+    color: solid black;
+    
+}
+#success-message
+{
+    text-transform:lowercase;
+    margin-left: 2.7cm;
+    color: #006A4E;
+}
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s;
+  }
+  
+  #preloader.hide {
+    opacity: 0;
+    pointer-events: none;
+    
+  }
+  
+  #loader {
+    animation: blink 1s linear infinite;
+  }
+  
+  @keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50%
+    {
+        opacity: 0.2;
+    }
+    100% {
+        opacity: 1;
+    }
+  }
+  
+/* #preloader
+{
+
+    background: 100%;
+    background:  url(https://www.pinclipart.com/picdir/big/106-1069842_file-northwest-missouri-state-bearcats-logo-svg-wikipedia.png) no-repeat center center;
+    background-size: 15%;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    z-index: 9999;
+    animation: rotate 1.5s infinite linear;
+    
+    
+} */
+
+
+
+
+
+
+
+    
+    

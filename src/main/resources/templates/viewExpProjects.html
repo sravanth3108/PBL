@@ -11,8 +11,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" th:href="@{/css/viewPrj.css}" type="text/css" >
-
+    <link rel="stylesheet" th:href="@{/css/viewExpProjects.css}" />
 
    
     <script>
@@ -30,22 +29,36 @@
 
         function toggle() {
             var toggleSwitch = document.getElementById('status');
-            if (toggleSwitch.checked) {
-                var url = '/viewProjects/expired';
+            if (!toggleSwitch.checked) {
+                var url = '/viewProjects';
                 window.location.href = url;
             } else {
                 console.log('Toggle switch is ON');
             }
         }
+        
+        function searchProjects() {
+    var projectName = document.getElementById("search").value;
+    if (projectName.trim() === "") {
+        alert('Search input can\'t be blank');
+    } else {
+        var url = '/searchProjects?keywords=' + encodeURIComponent(projectName);
+        window.location.href = url;
+    }
+}
 
-        function searchProjects()
+     /*   function searchProjects()
         {
             
             var projectName = document.getElementById("search").value;
+            if(projectName== null)
+            {
+                alert('search input cant be blank');
+            }
             var url = '/searchProjects?keywords=' + projectName;
             window.location.href =url;
 
-        }
+        }*/
     </script>
 </head>
 
@@ -73,11 +86,12 @@
                     </a>
                 </li>
                 <li>
-                    <a class="active">
+                    <a href="#" class="active" onclick="window.location.href='http://localhost:8080/viewProjects'">
                         <i class='bx bx-list-ul'></i>
-                        <span class="links_name" onclick="window.location='viewProjects'">View Projects</span>
+                        <span class="links_name">View Projects</span>
                     </a>
                 </li>
+                
 
                 <li class="log_out">
                     <a href="#">
@@ -88,25 +102,27 @@
             </ul> 
         </div>
     </div>
+
+    
     <div class="container searchContent">
         <input type="text" id="search">
-        <button id="searchButton" onclick = " searchProjects()">Search</button>
+        <button id="searchButton" onclick = "searchProjects()">Search</button>
     </div>
-
-    <div class="project-container" >
+    
+    <div class="project-container">
       
   <div class="custom-checkbox">
-    <input id="status" type="checkbox"  name="status" onchange="toggle()" >
+    <input id="status" type="checkbox"  name="status" onchange="toggle()" checked>
     <label for="status">
       <div class="status-switch" data-unchecked="Active"  data-checked="Expired">
       </div>
     </label>
   </div>
-  <div class = "projectsList">
+  
   <!-- Check if projects list is empty -->
   <th:block th:if="${#lists.isEmpty(projects)}">
     <div class="no-projects-message">
-        <p>No active projects available.</p>
+        <p>No expired projects available.</p>
     </div>
 </th:block>
 
@@ -137,7 +153,6 @@
         </div>
     </div>
 </th:block>
-</div>
 
 </body>
 

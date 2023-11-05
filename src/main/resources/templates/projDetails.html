@@ -4,6 +4,8 @@
     <title>User Project Page</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
+
   
     <style>
         /* CSS styling for the user project page */
@@ -12,12 +14,13 @@
         }
         .project-container {
             border-radius: 18px;
-            width: 80%;
-            margin-top:20px;
+            width: 100%;
+            margin-top:10px;
             padding: 12px;
             margin-left: 6.2cm;
         }
         .partition {
+            position: fixed;
             border-radius: 8px;
             background-color: white;
             padding: 10px;
@@ -25,6 +28,11 @@
             margin-left:20px;
             margin-bottom: 20px;
             display: block;
+            top:18%;
+            height: 80%; /* Set a percentage of the parent container height */
+            max-height: 800px; /* Set a maximum height if needed */
+            overflow-y: auto;
+            width:80%;
             
         }
         .partition1 {
@@ -42,12 +50,11 @@
             padding-bottom: 40px;
             border: 1px solid #ccc;
             margin-bottom: 20px;
-            overflow-y: auto;
             margin : 15px;	
         }
         .partition3 {
             border-radius: 4px;
-            background-color: transparent;
+            background-color: t ransparent;
             position: relative;
             border: 0px;
         }
@@ -80,6 +87,8 @@
             margin-left: 2cm;
             letter-spacing: 3px;
             box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.3);
+            position:fixed;
+            width:100%;
         }
         #commentText
         {
@@ -97,7 +106,7 @@
             display: block;
         }
         .logo {
-            position: absolute;
+            position: fixed;
             display: flex;
             height: 70px;
             width: 70px;
@@ -149,12 +158,127 @@
             padding: 5px 10px;
         }
         .partition2 {
-    /* ... */
-    overflow-y: auto;
-    max-height: 300px; /* Set the maximum height for the comments container */
+            overflow-y: auto;
+            max-height: 300px; /* Set the maximum height for the comments container */
+        }
+        .button {
+            background-color: #4CAF50; /* Green */
+             border: none;
+            color: white;
+            padding: 15px 32px;
+             text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 14px;
+            margin: 4px 2px;
+             cursor: pointer;
+             border-radius: 5px;
+        }
+
+        .button1 {background-color: #008CBA; float:right} /* Blue */
+        /*.button3 {background-color: #f44336;} /* Red */ 
+        /*.button {background-color: #e7e7e7; color: black;} /* Gray */ 
+        .button2 {background-color: #555555;float:right;top:0px} /* Black */
+/* Add animation styles for the sendRequest form */
+@keyframes slideIn {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
 }
 
+@keyframes slideOut {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(100%);
+    }
+}
+
+#sendRequestForm {
+    position: fixed;
+    top: 275px ;
+    right: 50px;
+    width: 30%;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    border-radius:10px;
+    animation: slideIn 0.3s ease-in-out;
+}
+
+#sendRequestForm.show {
+    animation: slideIn 0.3s ease-in-out;
+    display: block;
+}
+
+#sendRequestForm.hide {
+    animation: slideOut 0.3s ease-in-out;
+    display: none;
+}
+
+/* Additional styling for the form inputs and buttons */
+#sendRequestForm input[type="text"] {
+    width: calc(100% - 20px);
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#sendRequestForm button {
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+/* Rest of your CSS styles... */
+
+
+
     </style>
+
+    <script>
+    function sendRequest() {
+        var sendRequestForm = document.getElementById('sendRequestForm');
+        sendRequestForm.classList.remove('hide');
+        sendRequestForm.classList.add('show');
+    }
+    
+    function submitRequest() {
+    var contactName = document.getElementById("name").value;
+    var contactEmail = document.getElementById("email").value;
+
+    if (contactName && contactEmail) {
+        var xhr = new XMLHttpRequest();
+        var projectNameElement = document.getElementById("projName"); 
+
+        var projectName = projectNameElement.textContent;
+        var url = "/saveRequests?contactName=" + encodeURIComponent(contactName) + "&contactEmail=" + encodeURIComponent(contactEmail) + "&projName=" + encodeURIComponent(projectName);
+
+        window.location.href = url;
+    } else {
+        alert("Please fill out all fields.");
+    }
+}
+
+
+
+    function cancelRequest() {
+        hideRequestForm();
+    }
+    
+    function hideRequestForm() {
+        var sendRequestForm = document.getElementById('sendRequestForm');
+        sendRequestForm.classList.remove('show');
+        sendRequestForm.classList.add('hide');
+    }
+     </script>
 </head>
 <body>
     <header>
@@ -174,13 +298,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/postProjects" >
+                    <a href="postProjects" >
                         <i class='bx bx-box'></i>
                         <span class="links_name">Upload projects</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/viewProjects">
+                    <a href="viewProjects">
                         <i class='bx bx-list-ul'></i>
                         <span class="links_name">View Projects</span>
                     </a>
@@ -196,18 +320,36 @@
         <div id="project-container" class="project-container">
             <div class="partition">
                 <div class="partition1">
-                    <h2 class="project-title" style="margin:15px" th:text="${projectName}"></h2>
-                   <p class="project-description" style="margin-left:35px;margin:20px" th:text="${projDesc}"></p>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="list-group">
+                                    <h1 class="list-group-item list-group-item-action" id="projName" th:text="${projectName}"></h1>
+                                    <button class="list-group-item list-group-item-action button button1" onclick="sendRequest()">Send Request</button>
+                                </div>
+                            </div>
+                        </div>
+                         <br>
+                        <b>Project Full Description:</b>            
+                        <p class="project-description" style="margin-left:35px;margin:20px" th:text="${projDescFull}"></p>     
+                        <b>Project Requirements:</b>            
+                        <p class="project-requirements" style="margin-left:35px;margin:20px" th:text="${projReq}"></p>     
+                        <b>Contact Email:</b>        
+                        <p class="project-Contact email" style="margin-left:35px;margin:20px" th:text="${email}"></p>    
+                        <b>Phone:</b>                
+                        <p class="phone" style="margin-left:35px;margin:20px" th:text="${phone}"></p>     
+                        <b>Project Experience: </b>                                
+                        <p class="projExp" style="margin-left:35px;margin:20px" th:text="${projectExp}"></p>
+
                    
-                </div>
+                    </div>
                 <div class="partition2">
                     <div class="partition3">
                         <h2>Comments</h2>
                         <div id="comments">
                             <form onsubmit="addComment(event)">
                                 <textarea id="commentText" placeholder="Write a comment" required></textarea>
-                                <button id="post-cmt" type="submit">Post</button>
-                                <i id="post-cmt" class="bi bi-send"></i>
+                                <button id="post-cmt" class="button button2" type="submit" >Post</button>
                             </form>
                         </div>
                     </div>
@@ -215,22 +357,103 @@
             </div>
         </div>
    </div> </main>
+   <form id="sendRequestForm" action="/saveRequests" method="post">
+    <div class="container sendRequest">
+        <label>Enter your name</label>
+        <input type="text" id="name" name="contactName" required>
+        <label>Enter your email</label>
+        <input type="text" id="email" name="contactEmail" required>
+        <button class="button button1" type="button" onclick="submitRequest()">Submit</button>
+        <button class="button button2" type="button" onclick="cancelRequest()">Cancel</button>
+    </div>
+</form>
+
 
     <script>
-        var comments = [];
-
-        function addComment(event) {
-            event.preventDefault();
-
-            var commentText = document.getElementById('commentText').value;
-            var commentElement = createCommentElement(commentText);
+        let projName;
+        
+    
+    async function addComment(event) {
+        event.preventDefault();
+    
+        var commentText = document.getElementById('commentText').value;
+        var projectId = projName; // Replace with the actual project ID
+    
+        try {
+            const response = await fetch(`/api/comments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ projectId, text: commentText }),
+            });
+    
+            const comment = await response.json();
+            var commentElement = createCommentElement(comment.text, comment.id);
             document.getElementById('comments').appendChild(commentElement);
-
+    
             document.getElementById('commentText').value = '';
+        } catch (error) {
+            console.error('Error adding comment:', error);
         }
+    }
+    
+    async function addReply(event, commentId, replyTextarea) {
+        event.preventDefault();
 
-        function createCommentElement(commentText) {
-            var commentDiv = document.createElement('div');
+    var replyTextarea = document.getElementById(`replyText_${commentId}`);
+    var replyText = replyTextarea.value;
+
+    
+        try {
+            const response = await fetch(`/api/comments/${commentId}/replies`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: replyText }),
+            });
+    
+            const updatedComment = await response.json();
+            var replyElement = createCommentElement(updatedComment.replies[updatedComment.replies.length - 1].text, updatedComment.id);
+            var commentContainer = document.getElementById(`comment_${commentId}`);
+            commentContainer.appendChild(replyElement);
+    
+            replyTextarea.value = '';
+        } catch (error) {
+            console.error('Error adding reply:', error);
+        }
+    }
+
+    function redirectToWebsite() {
+    window.location.href = 'https://www.nwmissouri.edu/'; // Replace with the desired website URL
+}
+// Update the function to load comments based on the project name
+async function loadComments(projectName) {
+    try {
+        const response = await fetch(`/api/comments/load?projectName=${projectName}`);
+        const comments = await response.json();
+
+        // Get the comments container element
+        const commentsContainer = document.getElementById('comments');
+
+        // Clear existing comments before rendering new ones
+        commentsContainer.innerHTML = '';
+
+        // Loop through the comments and render them on the page
+        comments.forEach(comment => {
+            Console.log(comment);
+            const commentElement = createCommentElement(comment.text, comment.id);
+            commentsContainer.appendChild(commentElement);
+        });
+    } catch (error) {
+        console.error('Error loading comments:', error);
+    }
+}
+
+    function createCommentElement(commentText, commentId) {
+
+        var commentDiv = document.createElement('div');
             commentDiv.className = 'comment';
 
             var userInfoDiv = document.createElement('div');
@@ -242,7 +465,7 @@
 
             var usernameSpan = document.createElement('span');
             usernameSpan.className = 'username';
-            usernameSpan.textContent = 'TonyStark'; // Replace with the user's username
+            usernameSpan.textContent = 'Bobby Bearcat'; // Replace with the user's username
             userInfoDiv.appendChild(usernameSpan);
 
             commentDiv.appendChild(userInfoDiv);
@@ -254,12 +477,10 @@
 
             var replyForm = document.createElement('form');
             replyForm.className = 'reply-form';
-            replyForm.onsubmit = function(event) {
-                addReply(event, commentDiv);
-            };
 
             var replyTextarea = document.createElement('textarea');
             replyTextarea.placeholder = 'Reply to this comment';
+            replyTextarea.id= commentId + 
             replyForm.appendChild(replyTextarea);
 
             var replyButton = document.createElement('button');
@@ -268,25 +489,67 @@
             replyForm.appendChild(replyButton);
 
             commentDiv.appendChild(replyForm);
+            
+    replyForm.onsubmit = function(event) {
+        event.preventDefault();
+                addReply(event, commentId,replyTextarea);
+            };
+            
 
             return commentDiv;
-        }
+    }
+    
+    
+        window.onload = function() {
+ if (window.location.search) {
+    var queryString = window.location.search.substring(1);
+    
+    var params = queryString.split('&');
+    
+    for (var i = 0; i < params.length; i++) {
 
-        function addReply(event, parentComment) {
-            event.preventDefault();
+      var pair = params[i].split('=');
+      
+      if (pair[0] === 'name') {
+        projName = decodeURIComponent(pair[1]);
+        loadComments(projName);
+        console.log(decodeURIComponent(pair[1]));
+        
+      }
+    }
+ }
+};
+        
+    
 
-            var replyTextarea = parentComment.querySelector('textarea');
-            var replyText = replyTextarea.value;
-
-            var replyElement = createCommentElement(replyText);
-            parentComment.appendChild(replyElement);
-
-            replyTextarea.value = '';
-        }
 
         function redirectToWebsite() {
             window.location.href = 'https://www.nwmissouri.edu/'; // Replace with the desired website URL
         }
+/*
+        function addSubcomment(parentCommentId, subcommentText) {
+    var subcommentData = {
+        // Populate subcomment data here (e.g., subcommentText, parentCommentId)
+    };
+
+    // Make an AJAX POST request to save the subcomment
+    fetch('/api/comments/addSubcomment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(subcommentData)
+    })
+    .then(response => response.json())
+    .then(savedSubcomment => {
+        // Handle the saved subcomment, update the UI if needed
+        console.log('Subcomment saved:', savedSubcomment);
+    })
+    .catch(error => {
+        console.error('Error saving subcomment:', error);
+    });
+}*/
+
     </script>
 </body>
 </html>
