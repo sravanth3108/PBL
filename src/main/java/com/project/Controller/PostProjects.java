@@ -39,13 +39,17 @@ import org.springframework.http.ResponseEntity;
 
 
 import com.project.EmailService;
+import com.project.Model.Bearcat;
 import com.project.Model.Comments;
 import com.project.Model.PostProjectsModel;
 import com.project.Model.Requests;
 import com.project.Model.User;
+import com.project.Repository.BearcatRepository;
 import com.project.Repository.CommentRepository;
 import com.project.Repository.PostProjectsRepository;
 import com.project.Repository.UserRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PostProjects {
@@ -53,37 +57,55 @@ public class PostProjects {
 	  private EmailService emailService;
 	  String subject;
 	  User user;
+	  Bearcat bearcat;
 
 	    private PostProjectsRepository projectRepo;
 	    private CommentRepository commentRepo;
 	    private UserRepository userRepo;
 
+	    private BearcatRepository bearcatRepo;
+
 	@Autowired
-    public PostProjects(UserRepository userRepo, PostProjectsRepository projectRepo) {
+    public PostProjects(UserRepository userRepo, PostProjectsRepository projectRepo,BearcatRepository bearcatRepo, EmailService emailService) {
         this.userRepo = userRepo;
         this.projectRepo = projectRepo;
+        this.bearcatRepo= bearcatRepo;
+        this.emailService= emailService;
     }
     private String projectName;
 	 int count =0;
 
 	    @GetMapping("/userProfile")
-	    public ModelAndView getUserProfile(Model model)  {
+	    public ModelAndView getUserProfile(@RequestParam("mail") String email,HttpSession session, Model model)  {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("userProfile.html");
-       // user = userRepo.findById(email).orElse(null);
-       // String username = user.getFname() + " " +user.getLname();
-       // System.out.print(username);
-        //model.addAttribute("username", username);
+        session.setAttribute("email", email);
+        String username;
+        user = userRepo.findById(email).orElse(null);
+    	bearcat = bearcatRepo.findById(email).orElse(null);
+        if(user==null)
+        {
+
+            username = bearcat.getFname() + " " +bearcat.getLname();
+        }
+        else
+        {
+
+            username = user.getFname() + " " +user.getLname();
+        }
+        System.out.print(username);
+       
+       model.addAttribute("username", username);
         
-        List<PostProjectsModel> project = projectRepo.findAll();
+        List<PostProjectsModel> project = projectRepo.findByUserMail(email);
         model.addAttribute("projects", project);
          System.out.println(project);
         return modelAndView;
     }
 	
 	    @GetMapping("/postProjects")
-	    public ModelAndView postProjects(@RequestParam("mail") String mail, Model model) {
-	         ModelAndView modelAndView = new ModelAndView();
+	    public ModelAndView postProjects( Model model) {
+	         ModelAndView modelAndView = new ModelAndView();	         
         modelAndView.setViewName("post-projects.html");
         return modelAndView;
     }
@@ -149,10 +171,12 @@ public class PostProjects {
 	}*/
 	
 	@PostMapping("/postProjects")
-	public ModelAndView postProjectsForm(@ModelAttribute PostProjectsModel pps,@RequestParam("mail") String mail) {
+	public ModelAndView postProjectsForm(@ModelAttribute PostProjectsModel pps,HttpSession session) {
 	    System.out.println(pps.toString());
+
+    	String email = (String) session.getAttribute("email");
 	    // Set any other attributes in the model as needed
-	    pps.setUserMail(user.getMail());
+	    pps.setUserMail(email);
 	    projectRepo.save(pps);
 	    ModelAndView modelAndView = new ModelAndView();
 	    modelAndView.setViewName("redirect:/viewProjects"); // Redirect to the endpoint where you view projects
@@ -245,7 +269,7 @@ public class PostProjects {
 
 
 	@GetMapping("/projectDetails")
-	public ModelAndView getProjectDetails(@RequestParam("name") String projectName, Model model) {
+	public ModelAndView getProjectDetails(@RequestParam("name") String projectName, Model model, HttpSession session) {
 	    PostProjectsModel project = projectRepo.findById(projectName).orElse(null);
 	    
 	    if (project != null) {
@@ -266,14 +290,30 @@ public class PostProjects {
 	        model.addAttribute("projType", projType);
 	        model.addAttribute("projectExp", projectExp);
 	        model.addAttribute("projectName", projectName);
+
+	    	String emails = (String) session.getAttribute("email");
+	    	User user = userRepo.findById(emails).orElse(null);
+
+	    	Bearcat bearcat = bearcatRepo.findById(emails).orElse(null);
+	    	if (user != null) {
+	    	    System.out.println(user.getUsrName());
+	    	    model.addAttribute("username", user.getUsrName());
+	    	}
+	    	else if(bearcat!=null)
+	    	{
+
+	    	    model.addAttribute("username", bearcat.getUsrName());
+	    		
+	    	}
+	    		
 	        
 	        // Retrieve comments based on the project name
-	        List<Comments> comments = commentRepo.findByProjectId(projectName);
+	     /*   List<Comments> comments = commentRepo.findByProjectId(projectName);
 	        
 	        // Add comments to the model
 	        model.addAttribute("comments", comments);
 	        
-	        System.out.println(comments);
+	        System.out.println(comments);*/
 	        // Set the view name to "projDetails"
 		    ModelAndView modelAndView = new ModelAndView();
 		    modelAndView.setViewName("projDetails");

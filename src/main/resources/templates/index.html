@@ -212,7 +212,8 @@ footer > p > a {
         
         <div class="container login">
         <img src="https://www.nebraskajuniors.org/wp-content/uploads/2018/09/Northwest-Missouri-State-University.png" class="logo">
-        <form id="login_form" class="form_class" method="post">
+        <form id="login_form" class="form_class" action ="/verifylogin" method="post">
+
             <p id="success-message"></p>
             <div class="form_div">
                 <label>Login:</label>
@@ -288,6 +289,8 @@ function togglePasswordVisibility() {
           var successMessageElement = document.getElementById('success-message');
           successMessageElement.textContent = message;
         }
+
+
       </script>
 </body>
 </html>

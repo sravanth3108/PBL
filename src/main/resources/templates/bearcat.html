@@ -5,12 +5,12 @@
     </header>
     <main>
         <img class="logo" src="https://www.nebraskajuniors.org/wp-content/uploads/2018/09/Northwest-Missouri-State-University.png">
-        <form id="login_form" class="form_class" action="bearcat.php" method="post">
+        <form id="login_form" class="form_class" action="/bearcat" method="post" th:object="${bearcat}">
             <div class="form_div">
                 <label>Student id</label>
-                <input class="field_class" name="SID" type="text" placeholder="SXXXXXX@nwmissouri.edu" autofocus required>
+                <input class="field_class" th:field="*{mail}" name="SID" type="text" placeholder="SXXXXXX@nwmissouri.edu" autofocus required>
                 <label>Password:</label>
-                <input id="pass" class="field_class" name="bpwd" type="password" placeholder="PWD Case Sensitive" required>
+                <input id="pass" class="field_class"  th:field="*{password}" name="bpwd" type="password" placeholder="PWD Case Sensitive" required>
                 <button class="submit_class" type="submit" form="login_form" name="BLogin" >Go Bearcat</button>
                 
                 

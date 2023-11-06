@@ -18,6 +18,8 @@ public interface PostProjectsRepository extends MongoRepository<PostProjectsMode
 
 	   @Query("{ 'projName' : { $regex: ?0, $options: 'i' } }")
 	    List<PostProjectsModel> findByNameContaining(String name);
+	   
+	   List<PostProjectsModel> findByUserMail(String userMail);
 
 	
 	

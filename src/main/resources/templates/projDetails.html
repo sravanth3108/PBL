@@ -244,6 +244,12 @@
     </style>
 
     <script>
+        var usernameValue;
+        document.addEventListener("DOMContentLoaded", function() {
+    usernameValue = document.getElementById('usernamedb').textContent;
+    console.log(usernameValue);
+});
+
     function sendRequest() {
         var sendRequestForm = document.getElementById('sendRequestForm');
         sendRequestForm.classList.remove('hide');
@@ -351,6 +357,8 @@
                                 <textarea id="commentText" placeholder="Write a comment" required></textarea>
                                 <button id="post-cmt" class="button button2" type="submit" >Post</button>
                             </form>
+                            <label th:text="${username}" id="usernamedb" style="display:none"></label>
+
                         </div>
                     </div>
                 </div>
@@ -465,7 +473,7 @@ async function loadComments(projectName) {
 
             var usernameSpan = document.createElement('span');
             usernameSpan.className = 'username';
-            usernameSpan.textContent = 'Bobby Bearcat'; // Replace with the user's username
+            usernameSpan.textContent = usernameValue; // Replace with the user's username
             userInfoDiv.appendChild(usernameSpan);
 
             commentDiv.appendChild(userInfoDiv);
@@ -500,7 +508,7 @@ async function loadComments(projectName) {
     }
     
     
-        window.onload = function() {
+ /*       window.onload = function() {
  if (window.location.search) {
     var queryString = window.location.search.substring(1);
     
@@ -518,7 +526,7 @@ async function loadComments(projectName) {
       }
     }
  }
-};
+};*/
         
     
 
