@@ -1,11 +1,13 @@
 # Build stage
-FROM maven:3.9.4-openjdk-21 AS build
-WORKDIR /app
-COPY . .
+FROM maven:3.8-openjdk-18 AS build
+WORKDIR /app  
+COPY . .       
 RUN mvn clean package -Pprod -DskipTests
 
 # Runtime stage
 FROM openjdk:17-jdk-slim
-WORKDIR /app
-COPY --from=build /app/target/Project-0.0.1-SNAPSHOT.jar PBL.jar
-CMD ["java", "-jar", "PBL.jar"]
+WORKDIR /app  
+COPY --from=build /app/target/DogsManagementSystem-0.0.1-SNAPSHOT.jar DogsManagementSystem.jar
+CMD ["java", "-jar", "DogsManagementSystem.jar"]
+COPY --from=build /app/target/Project-0.0.1-SNAPSHOT.jar Project.jar
+CMD ["java", "-jar", "Project.jar"]
