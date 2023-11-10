@@ -37,6 +37,13 @@
                 console.log('Toggle switch is ON');
             }
         }
+        function userProfile()
+        {
+            var mail = document.getElementById("email").textContent;
+            var url = "/userProfile?mail="+mail;
+            window.location.href = url;
+        }
+        
     </script>
 </head>
 
@@ -52,7 +59,7 @@
         <div class="sidebar left" id="viewprjsdbr">
             <ul class="nav-links">
                 <li>
-                    <a href="/">
+                    <a onclick = "userProfile()">
                         <i class='bx bx-grid-alt'></i>
                         <span class="links_name">Home</span>
                     </a>
@@ -113,6 +120,8 @@
             </div>
             <a href="#">
                 <div class="partition3">
+                    
+        <div th:text = "${email}" style="display:none" id = "email"></div>
                     <div class="partition-content star-project-user">
                         <i class="fas fa-flag" id="flag" th:attr="data-project-name=${project.projName}"
                             onclick="flagProject(this)"></i>

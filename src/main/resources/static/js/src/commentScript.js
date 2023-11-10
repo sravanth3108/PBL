@@ -47,6 +47,7 @@ fetch('/api/comments', {
 
         
     });
+    
     document.getElementById('submitRequestButton').addEventListener('click', submitRequest);
 document.getElementById('cancelRequestButton').addEventListener('click', cancelRequest);
 document.getElementById('sendRequestButton').addEventListener('click', sendRequest);

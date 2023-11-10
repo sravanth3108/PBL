@@ -21,6 +21,8 @@ public interface PostProjectsRepository extends MongoRepository<PostProjectsMode
 	   
 	   List<PostProjectsModel> findByUserMail(String userMail);
 
+	   List<PostProjectsModel> findByApproved(char approved);
+
 	
 	
 	

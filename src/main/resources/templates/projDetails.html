@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>User Project Page</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/style.css">
@@ -139,18 +140,18 @@
         .comment .user-info .username {
             font-weight: bold;
         }
-        .reply-form {
+        .reply-form, .reply-form1 {
             margin-top: 10px;
             
             
         }
-        .reply-form textarea {
+        .reply-form textarea, .reply-form1 textarea {
             width: 90%;
             border-radius: 10px;
             border: transparent;
             
         }
-        .reply-form button {
+        .reply-form button, .reply-form1 button {
             margin-top: 5px;
             border-radius: 10px;
             background-color: #006A4E;
@@ -175,6 +176,42 @@
              cursor: pointer;
              border-radius: 5px;
         }
+        .comments {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.user-info {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.comment-content {
+    margin-bottom: 10px;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flag-button {
+    background-color: #ff6961;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.reply-link {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+}
 
         .button1 {background-color: #008CBA; float:right} /* Blue */
         /*.button3 {background-color: #f44336;} /* Red */ 
@@ -237,6 +274,24 @@
     margin-right: 10px;
 }
 
+.reply-button {
+    background-color: #4CAF50; /* Green background color */
+    color: white; /* White text color */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding */
+    text-align: center; /* Center text */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Display as inline-block */
+    font-size: 16px; /* Font size */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    cursor: pointer; /* Cursor style on hover */
+}
+
+.reply-button:hover {
+    background-color: #45a049; /* Darker green background color on hover */
+}
+
+
 /* Rest of your CSS styles... */
 
 
@@ -247,7 +302,7 @@
         var usernameValue;
         document.addEventListener("DOMContentLoaded", function() {
     usernameValue = document.getElementById('usernamedb').textContent;
-    console.log(usernameValue);
+    
 });
 
     function sendRequest() {
@@ -279,11 +334,44 @@
         hideRequestForm();
     }
     
+    function flagComment()
+    {
+        var commentId = document.getElementById("data-comment-name");
+        var url="/flagComments?comment=" + commentId;
+        window.location.url = url;
+    }
     function hideRequestForm() {
         var sendRequestForm = document.getElementById('sendRequestForm');
         sendRequestForm.classList.remove('show');
         sendRequestForm.classList.add('hide');
     }
+    function userProfile()
+        {
+            var mail = document.getElementById("email").textContent;
+            var url = "/userProfile?mail="+mail;
+            window.location.href = url;
+        }
+        
+        function replyComment(element) {
+    var commentId = element.getAttribute('data-comment-id');
+    var replyForm = element.getAttribute('data-reply-form-id');
+    replyForm.style.display = 'block';
+}
+
+
+function replyComment(element) {
+    console.log('function called');
+    var commentId = element.getAttribute('data-comment-id');
+    var replyForm = document.getAttribute('reply-form-' + commentId);
+    replyForm.style.display = 'block';
+    replyForm.scrollIntoView({ behavior: 'smooth' });
+}
+
+
+    // Other JavaScript code...
+
+
+
      </script>
 </head>
 <body>
@@ -298,7 +386,7 @@
         <div class="sidebar left">
             <ul class="nav-links">
                 <li>
-                    <a href="/">
+                    <a onclick="userProfile()">
                         <i class='bx bx-grid-alt'></i>
                         <span class="links_name">Home</span>
                     </a>
@@ -324,6 +412,8 @@
             </ul>
         </div>
         <div id="project-container" class="project-container">
+            
+        <div th:text = "${email}" style="display:none" id = "email"></div>
             <div class="partition">
                 <div class="partition1">
                     <div class="container-fluid">
@@ -349,10 +439,11 @@
 
                    
                     </div>
-                <div class="partition2">
+                <div class="partition2">                                                           
                     <div class="partition3">
                         <h2>Comments</h2>
                         <div id="comments">
+                            
                             <form onsubmit="addComment(event)">
                                 <textarea id="commentText" placeholder="Write a comment" required></textarea>
                                 <button id="post-cmt" class="button button2" type="submit" >Post</button>
@@ -360,7 +451,25 @@
                             <label th:text="${username}" id="usernamedb" style="display:none"></label>
 
                         </div>
-                    </div>
+                        <div id="preloadcomments">
+                            <th:block th:unless="${#lists.isEmpty(comments)}">
+                                <div th:each="comment : ${comments}" class="comment" th:id ="${comment.id}">
+                                    <div class="user-info">
+                                        <span class="username" th:text="${comment.usrName}"></span>
+                                    </div>
+                                    <div class="comment-content" th:text="${comment.text}">                                        
+                                        <button onclick="flagcomment(this)">flag</button>   
+                                    </div>     
+                                    <b><label  th:data-comment-id="${comment.id}" onclick="replyComment(this)" style="font-size: 10px;">reply</label></b>
+                        
+                                    <form class="reply-form" th:data-reply-form-id="${comment.id}" method="post" style="display:none">
+                                        <textarea placeholder="reply to this comment"></textarea>
+                                        <button type="submit">Reply</button>
+                                    </form>
+                                </div>
+                            </th:block>
+                        </div>
+                             
                 </div>
             </div>
         </div>
@@ -378,14 +487,18 @@
 
 
     <script>
-        let projName;
         
+        var projectNameElement = document.getElementById("projName"); 
+
+        var projectId = projectNameElement.textContent; 
+        console.log("project name is " +projectId);
     
     async function addComment(event) {
         event.preventDefault();
     
         var commentText = document.getElementById('commentText').value;
-        var projectId = projName; // Replace with the actual project ID
+        
+        var usrName = usernameValue;
     
         try {
             const response = await fetch(`/api/comments`, {
@@ -393,7 +506,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ projectId, text: commentText }),
+                body: JSON.stringify({ projectId, text: commentText , usrName}),
             });
     
             const comment = await response.json();

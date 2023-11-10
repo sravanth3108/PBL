@@ -29,6 +29,18 @@
         var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         var phonePattern = /^\d{10}$/;
 
+        function userProfile()
+        {
+            var mail = document.getElementById("email").textContent;
+            var url = "/userProfile?mail="+mail;
+            window.location.href = url;
+        }
+        
+        function addUser() 
+        {
+
+        }
+
         function show() {
             document.getElementById("projectForm").style.display = 'block';
             document.getElementById("postInfo").style.display = 'none';
@@ -44,21 +56,18 @@
             var projDesc = document.getElementById('projDesc').value;
             var projDescfull = document.getElementById('projDescfull').value;
             var projExp = document.getElementById('projExp').value;
-            var email = document.getElementById('email').value;
+           // var email = document.getElementById('email').value;
             var phone = document.getElementById('phone').value;
             var expiryDate = document.getElementById('expiryDate').value;
             var projType = document.querySelector('input[name="projType"]:checked');
 
             var isValid = true;
 
-            if (projName === '' || projReq === '' || projDesc === '' || projDescfull === '' || projExp === '' || email === '' || phone === '' || expiryDate === '' || projType === null) {
+            if (projName === '' || projReq === '' || projDesc === '' || projDescfull === '' || projExp === '' || phone === '' || expiryDate === '' || projType === null) {
                 alert('All fields are required.');
                 isValid = false;
             } else if (isNaN(projExp) || projExp <= 0) {
                 alert('Please enter a valid experience (in months).');
-                isValid = false;
-            } else if (!emailPattern.test(email)) {
-                alert('Please enter a valid email address.');
                 isValid = false;
             } else if (!phonePattern.test(phone)) {
                 alert('Please enter a valid 10-digit phone number.');
@@ -79,7 +88,7 @@
         <div class="sidebar left">
             <ul class="nav-links">
                 <li>
-                    <a href="/">
+                    <a onclick="userProfile()">
                         <i class='bx bx-grid-alt'></i>
                         <span class="links_name">Home</span>
                     </a>
@@ -119,6 +128,7 @@
                 discover exciting professional-based learning opportunities, connect with like-minded individuals, and
                 contribute to meaningful projects. Let's collaborate and make a real impact</p>
         </div>
+        <div th:text = "${email}" style="display:none" id = "email"></div>
 
         <div class="container-fluid">
             <form id="projectForm" style="display:none" method="post" onsubmit="formValidation(event)">
@@ -143,10 +153,6 @@
                 <br>
                 <input type="text" id="keywords" name="keywords" placeholder="Enter keywords to categorize the projects" class="required">
                 <br>
-
-                <label for="email">Email to contact</label>
-                <input type="text" id="email" name="email" placeholder="Enter your contact email.." class="required">
-
                 <label for="phone">Contact number</label><br>
                 <input type="number" id="phone" name="phone" placeholder="Enter your contact number.." class="required">
 

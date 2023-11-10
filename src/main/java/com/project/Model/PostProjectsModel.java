@@ -26,15 +26,11 @@ public class PostProjectsModel {
 	private int requestCount;
 	private String keywords;
 	private String userMail;
+	private char approved;
+	private String usrName;
 	
+		
 	
-	
-	public String getUserMail() {
-		return userMail;
-	}
-	public void setUserMail(String userMail) {
-		this.userMail = userMail;
-	}
 	public String getKeywords() {
 		return keywords;
 	}
@@ -140,6 +136,25 @@ public class PostProjectsModel {
 		
 		return "PostProjects [projName=" + projName + "; projDesc=" + projDesc +"; projDescfull=" + projDescfull+ "; projReq=" + projReq + "; email="
 				+ email + "; phone=" + phone + "]";
+	}
+	public char getApproved() {
+		return approved;
+	}
+	public void setApproved(char approved) {
+		this.approved = approved;
+	}
+	
+	public String getUserMail() {
+		return userMail;
+	}
+	public void setUserMail(String userMail) {
+		this.userMail = userMail;
+	}
+	public String getUsrName() {
+		return usrName;
+	}
+	public void setUsrName(String usrName) {
+		this.usrName = usrName;
 	}
 	
 	

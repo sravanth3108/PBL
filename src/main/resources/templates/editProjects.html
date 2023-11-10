@@ -349,6 +349,14 @@ input[type="submit"]:hover {
             }
         });
     });
+
+    function userProfile()
+        {
+            var mail = document.getElementById("email").textContent;
+            var url = "/userProfile?mail="+mail;
+            window.location.href = url;
+        }
+        
 </script>
 
   </head>
@@ -364,7 +372,7 @@ input[type="submit"]:hover {
             <div class="sidebar left">
                 <ul class="nav-links">
                     <li>
-                        <a href="/" class="active">
+                        <a onclick ="userProfile()" class="active">
                             <i class='bx bx-grid-alt'></i>
                             <span class="links_name">Home</span>
                         </a>
@@ -393,6 +401,8 @@ input[type="submit"]:hover {
     
 
       <div class="container-fluid" >
+        
+        <div th:text = "${email}" style="display:none" id = "email"></div>
         <form id="projectForm" method="post"  th:action="@{'/updateProject?name=' + ${projectName}}">
             <label for="projName">Project Name *</label>
             <input type="text" id="projName" name="projName" th:value="${projectName}" class="required" readonly>

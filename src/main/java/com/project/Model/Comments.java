@@ -12,6 +12,8 @@ public class Comments {
     private String projectId;
     private String text;
     private List<Subcomments> replies;
+    private String usrName;
+    private int flags;
 	public String getId() {
 		return id;
 	}
@@ -35,6 +37,18 @@ public class Comments {
 	}
 	public void setReplies(List<Subcomments> replies) {
 		this.replies = replies;
+	}
+	public String getUsrName() {
+		return usrName;
+	}
+	public void setUsrName(String usrName) {
+		this.usrName = usrName;
+	}
+	public int getFlags() {
+		return flags;
+	}
+	public void setFlags(int flags) {
+		this.flags = flags;
 	}
 
     

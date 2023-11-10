@@ -37,6 +37,12 @@
             }
         }
         
+        function userProfile()
+        {
+            var mail = document.getElementById("email").textContent;
+            var url = "/userProfile?mail="+mail;
+            window.location.href = url;
+        }
         function searchProjects() {
     var projectName = document.getElementById("search").value;
     if (projectName.trim() === "") {
@@ -74,7 +80,7 @@
         <div class="sidebar left" id="viewprjsdbr">
             <ul class="nav-links">
                 <li>
-                    <a href="/">
+                    <a onclick="userProfile()">
                         <i class='bx bx-grid-alt'></i>
                         <span class="links_name">Home</span>
                     </a>
@@ -110,6 +116,8 @@
     </div>
     
     <div class="project-container">
+        
+        <div th:text = "${email}" style="display:none" id = "email"></div>
       
   <div class="custom-checkbox">
     <input id="status" type="checkbox"  name="status" onchange="toggle()" checked>

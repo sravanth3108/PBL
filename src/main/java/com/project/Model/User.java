@@ -12,6 +12,7 @@ public class User {
     private String lname;
     private String password;
     private String mNumber;
+    private String profilePictureURL;
 	public String getMail() {
 		return mail;
 	}
@@ -47,6 +48,12 @@ public class User {
 	}
 	public void setmNumber(String mNumber) {
 		this.mNumber = mNumber;
+	}
+	public String getProfilePictureURL() {
+		return profilePictureURL;
+	}
+	public void setProfilePictureURL(String profilePictureURL) {
+		this.profilePictureURL = profilePictureURL;
 	}
     
     

@@ -66,11 +66,12 @@ public class PostProjects {
 	    private BearcatRepository bearcatRepo;
 
 	@Autowired
-    public PostProjects(UserRepository userRepo, PostProjectsRepository projectRepo,BearcatRepository bearcatRepo, EmailService emailService) {
+    public PostProjects(UserRepository userRepo, PostProjectsRepository projectRepo,BearcatRepository bearcatRepo,CommentRepository commentRepo, EmailService emailService) {
         this.userRepo = userRepo;
         this.projectRepo = projectRepo;
         this.bearcatRepo= bearcatRepo;
         this.emailService= emailService;
+        this.commentRepo = commentRepo;
     }
     private String projectName;
 	 int count =0;
@@ -81,6 +82,12 @@ public class PostProjects {
         modelAndView.setViewName("userProfile.html");
         session.setAttribute("email", email);
         String username;
+        List<PostProjectsModel> approved = projectRepo.findByApproved('y');
+        List<PostProjectsModel> rejected = projectRepo.findByApproved('n');
+        List<PostProjectsModel> pending = projectRepo.findByApproved('m');
+        int approvedCount = approved.size();
+        int rejectedCount = rejected.size();
+        int pendingCount = pending.size();
         user = userRepo.findById(email).orElse(null);
     	bearcat = bearcatRepo.findById(email).orElse(null);
         if(user==null)
@@ -94,20 +101,28 @@ public class PostProjects {
             username = user.getFname() + " " +user.getLname();
         }
         System.out.print(username);
-       
+       model.addAttribute("email",email);
        model.addAttribute("username", username);
+       model.addAttribute("approved", approvedCount);
+       model.addAttribute("pending", pendingCount);
+       model.addAttribute("rejected", rejectedCount);       
+       model.addAttribute("count", rejectedCount);
         
         List<PostProjectsModel> project = projectRepo.findByUserMail(email);
         model.addAttribute("projects", project);
+        model.addAttribute("count", project.size());
          System.out.println(project);
         return modelAndView;
     }
 	
-	    @GetMapping("/postProjects")
-	    public ModelAndView postProjects( Model model) {
-	         ModelAndView modelAndView = new ModelAndView();	         
-        modelAndView.setViewName("post-projects.html");
-        return modelAndView;
+	    @RequestMapping("/postProjects")
+	    public ModelAndView postProjects(HttpSession session, Model model) {	    	
+
+	    	String email = (String) session.getAttribute("email");
+		    model.addAttribute("email",email);
+	        ModelAndView modelAndView = new ModelAndView();	         
+            modelAndView.setViewName("post-projects.html");
+            return modelAndView;
     }
 	
 	@GetMapping("/searchProjects")
@@ -171,13 +186,21 @@ public class PostProjects {
 	}*/
 	
 	@PostMapping("/postProjects")
-	public ModelAndView postProjectsForm(@ModelAttribute PostProjectsModel pps,HttpSession session) {
+	public ModelAndView postProjectsForm(@ModelAttribute PostProjectsModel pps,HttpSession session, Model model) {
 	    System.out.println(pps.toString());
 
     	String email = (String) session.getAttribute("email");
+    	 User user= userRepo.findById(email).orElse(null);
+    	 String userName = user.getUsrName();
+    	System.out.println("email in post"+email);
 	    // Set any other attributes in the model as needed
 	    pps.setUserMail(email);
+	    pps.setUsrName(userName);
+	    
+	    pps.setApproved('m');
 	    projectRepo.save(pps);
+	    model.addAttribute("email",email);
+	    
 	    ModelAndView modelAndView = new ModelAndView();
 	    modelAndView.setViewName("redirect:/viewProjects"); // Redirect to the endpoint where you view projects
 	    return modelAndView;
@@ -214,7 +237,7 @@ public class PostProjects {
 
 	
 	@GetMapping("/viewProjects")
-	public String viewProjects(Model model) throws java.text.ParseException {
+	public String viewProjects(Model model, HttpSession session) throws java.text.ParseException {
 		    List<PostProjectsModel> projects = projectRepo.findAll();
 		    List<PostProjectsModel> expiredProjects = new ArrayList<>(); // Create a list to store expired projects
 
@@ -236,11 +259,13 @@ public class PostProjects {
 		    }
 
 		    model.addAttribute("projects", expiredProjects); // Add the list of expired projects to the model
+
+		    model.addAttribute("email",(String)session.getAttribute("email"));
 		    return "view-projects";
 		}
 
 	@GetMapping("/viewProjects/expired")
-	public String viewProjectsExp(Model model) throws java.text.ParseException {
+	public String viewProjectsExp(Model model, HttpSession session) throws java.text.ParseException {
 
 	    List<PostProjectsModel> projects = projectRepo.findAll();
 	    List<PostProjectsModel> expiredProjects = new ArrayList<>(); // Create a list to store expired projects
@@ -263,7 +288,9 @@ public class PostProjects {
 	        System.out.print(pps);
 	    }
 
-	    model.addAttribute("projects", expiredProjects); // Add the list of expired projects to the model
+	    model.addAttribute("projects", expiredProjects); 
+
+	    model.addAttribute("email",(String)session.getAttribute("email"));// Add the list of expired projects to the model
 	    return "viewExpProjects";
 	}
 
@@ -308,12 +335,17 @@ public class PostProjects {
 	    		
 	        
 	        // Retrieve comments based on the project name
-	     /*   List<Comments> comments = commentRepo.findByProjectId(projectName);
+	    	List<Comments> comments = commentRepo.findByProjectId(projectName);
+	    	System.out.println("Retrieved comments for project: " + projectName);
+	    	System.out.println("Number of comments: " + comments.size());
+
 	        
 	        // Add comments to the model
 	        model.addAttribute("comments", comments);
+
+	    	model.addAttribute("email", emails);
 	        
-	        System.out.println(comments);*/
+	        System.out.println(comments);
 	        // Set the view name to "projDetails"
 		    ModelAndView modelAndView = new ModelAndView();
 		    modelAndView.setViewName("projDetails");
@@ -329,7 +361,7 @@ public class PostProjects {
 
 	 
 	 @GetMapping("/editProjects")
-	    public ModelAndView editProject(@RequestParam("name") String projectName, Model model) 
+	    public ModelAndView editProject(@RequestParam("name") String projectName, HttpSession session, Model model) 
 	    {
 
 			PostProjectsModel project = projectRepo.findById(projectName).orElse(null);
@@ -349,6 +381,7 @@ public class PostProjects {
 		    model.addAttribute("email",email);
 		    model.addAttribute("projType", projType);
 		    model.addAttribute("projectExp",projectExp);
+		    model.addAttribute("email",(String)session.getAttribute("email"));
 		    //model.addAllAttributes(project);
   		    System.out.println(model);
 		    ModelAndView modelAndView = new ModelAndView();
@@ -419,6 +452,23 @@ public class PostProjects {
 	        message.setText(project.getProjName()+"has been flagged ");
 	        javaMailSender.send(message);*/
 	     return new ModelAndView("redirect:/viewProjects");
+	    }
+	 
+
+	 @GetMapping("/flagComments")
+	    public ModelAndView flagComment(@RequestParam("comment") String commentId, Model model, HttpSession httpsession) 
+	    {
+		 
+		 Comments comment = commentRepo.findById(commentId).orElse(null);
+		 if(comment!=null)
+		 {
+			 comment.setFlags(comment.getFlags()+1);
+			 commentRepo.save(comment);
+		 }
+		 emailService.sendEmail("sravanthreddy.pullamgari@gmail.com", "A project has been flagged", projectName+" has been flagged and request your action on the issue");
+		 String url =  "/projectDetails?" + httpsession.getAttribute(projectName);
+				     return new ModelAndView("redirect:/"+url);
+	    
 	    }
 	 
 	 /*
