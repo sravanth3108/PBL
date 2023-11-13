@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -336,15 +337,12 @@ public class PostProjects {
 	        
 	        // Retrieve comments based on the project name
 	    	List<Comments> comments = commentRepo.findByProjectId(projectName);
+
+	        Collections.reverse(comments);
 	    	System.out.println("Retrieved comments for project: " + projectName);
 	    	System.out.println("Number of comments: " + comments.size());
-
-	        
-	        // Add comments to the model
 	        model.addAttribute("comments", comments);
-
-	    	model.addAttribute("email", emails);
-	        
+	        model.addAttribute("email", emails);
 	        System.out.println(comments);
 	        // Set the view name to "projDetails"
 		    ModelAndView modelAndView = new ModelAndView();

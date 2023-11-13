@@ -1,5 +1,6 @@
 package com.project.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import com.project.Model.PostProjectsModel;
 import com.project.Model.Subcomments;
 import com.project.Repository.CommentRepository;
 import com.project.Repository.PostProjectsRepository;
+import com.project.Repository.SubcommentRepository;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -26,53 +28,77 @@ public class CommentController {
     private final CommentRepository commentRepository;
 
     private PostProjectsRepository projectRepo;
+    
+    private SubcommentRepository subCommentRepo;
 
     @Autowired
-    public CommentController(CommentRepository commentRepository,PostProjectsRepository projectRepo) {
+    public CommentController(CommentRepository commentRepository,PostProjectsRepository projectRepo,SubcommentRepository subCommentRepo) {
         this.commentRepository = commentRepository;
         this.projectRepo = projectRepo;
+        this.subCommentRepo = subCommentRepo;
     }
 
 	
 
     @PostMapping
-    public Comments addComment(@RequestBody Comments comment) {
-        // Save the comment to the database
-        return commentRepository.save(comment);
-    }
+    	public Comments addComment(@RequestBody Comments comment) {
+            // Save the main comment to the database
+            Comments savedComment = commentRepository.save(comment);
+            return savedComment;
+        }
+    
+    @PostMapping("/{commentId}/flag")
+    public ResponseEntity<Void> flagComment(@PathVariable String commentId) {      
+        Comments comment = commentRepository.findById(commentId).orElse(null);     
+        comment.setFlags(comment.getFlags() + 1);
+        commentRepository.save(comment);
 
+        return ResponseEntity.ok().build();
+    }
+   
     @PostMapping("/{commentId}/replies")
-    public ResponseEntity<Comments> addReply(@PathVariable String commentId, @RequestBody Subcomments subcomment) {
-        Optional<Comments> optionalComment = commentRepository.findById(commentId);
-        if (optionalComment.isPresent()) {
-            Comments comment = optionalComment.get();
-            comment.getReplies().add(subcomment);
-            Comments updatedComment = commentRepository.save(comment);
-            return ResponseEntity.ok(updatedComment);
-        } else {
-            // Handle case when the comment with given ID does not exist
-            return ResponseEntity.notFound().build();
-        }
-    }
+    public Comments addReply(@PathVariable String commentId, @RequestBody Subcomments subcomment) {
+        subcomment.setParentCommentId(commentId);
+        Subcomments savedSubcomment = subCommentRepo.save(subcomment);
+        Comments parentComment = commentRepository.findById(commentId).orElse(null);        
+        if (parentComment != null) {
+            List<Subcomments> subCommentsList = parentComment.getReplies();            
+            if (subCommentsList == null) {
+                subCommentsList = new ArrayList<>();
+            }
+            subCommentsList.add(savedSubcomment);
 
-    @GetMapping("/load/{projectName}")
-    public ResponseEntity<List<Comments>> loadComments(@PathVariable String projectName) {
-        Optional<PostProjectsModel> optionalProject = projectRepo.findById(projectName);
-        if (optionalProject.isPresent()) {
-            PostProjectsModel project = optionalProject.get();
-            List<Comments> comments = commentRepository.findByProjectId(projectName);
-            System.out.println("comments" + comments);
-            return ResponseEntity.ok(comments);
-        } else {
-            // Handle case when the project with given name does not exist
-            return ResponseEntity.notFound().build();
+            parentComment.setReplies(subCommentsList);
+
+            commentRepository.save(parentComment);
         }
+        return commentRepository.findById(commentId).orElse(null);
     }
+    @PostMapping("/{commentId}/subcomments/{subcommentId}/flag")
+    public ResponseEntity<Void> flagSubComment(@PathVariable String commentId, @PathVariable String subcommentId){        
+      
+        Subcomments subcomment = subCommentRepo.findById(subcommentId).orElse(null);     
+        subcomment.setFlags(subcomment.getFlags() + 1);
+        Subcomments savedSubcomment = subCommentRepo.save(subcomment);
+
+        Comments parentComment = commentRepository.findById(commentId).orElse(null);
+        if (parentComment != null) {
+            List<Subcomments> subCommentsList = parentComment.getReplies();            
+            if (subCommentsList == null) {
+                subCommentsList = new ArrayList<>();
+            }
+            subCommentsList.add(savedSubcomment);
+
+            parentComment.setReplies(subCommentsList);
+        commentRepository.save(parentComment);
+        }
+
+        return ResponseEntity.ok().build();
+      
+    }
+   
+}
+
+
 
     
-
-    @GetMapping("/{projectId}")
-    public List<Comments> getCommentsByProjectId(@PathVariable String projectId) {
-        return commentRepository.findByProjectId(projectId);
-    }
-}

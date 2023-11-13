@@ -175,8 +175,7 @@
             margin: 4px 2px;
              cursor: pointer;
              border-radius: 5px;
-        }
-        .comments {
+        }.comment {
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ccc;
@@ -208,6 +207,56 @@
 }
 
 .reply-link {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.subcomment {
+    margin-top: 5px;
+    margin-left: 20px; /* Adjust the margin to create the nesting effect */
+    
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.subcomment .user-info {
+    display: flex;
+    align-items: center;
+}
+
+.subcomment .user-info img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.subcomment .user-info .username {
+    font-weight: bold;
+}
+
+.subcomment .subcomment-content {
+    margin-bottom: 10px;
+}
+
+.subcomment .comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.subcomment .flag-button {
+    background-color: #ff6961;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.subcomment .reply-link {
     color: #007bff;
     text-decoration: underline;
     cursor: pointer;
@@ -290,7 +339,20 @@
 .reply-button:hover {
     background-color: #45a049; /* Darker green background color on hover */
 }
+.replyToComment:hover
+{
+    font-size: 13px;
+}
+#flag:hover{
+            height:26px;
+            width: 20px;
+            display: flex;
+        }
 
+.flagged
+{
+    color:red;
+}
 
 /* Rest of your CSS styles... */
 
@@ -334,12 +396,66 @@
         hideRequestForm();
     }
     
-    function flagComment()
+    function flagComment(element) 
     {
-        var commentId = document.getElementById("data-comment-name");
-        var url="/flagComments?comment=" + commentId;
-        window.location.url = url;
-    }
+
+    var commentId = element.getAttribute('data-comment-id');
+
+    // Send a request to the server to flag the comment
+    fetch(`/api/comments/${commentId}/flag`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // You can include additional data in the request body if needed
+        // body: JSON.stringify({}),
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("comment flagged");
+            element.classList.add('flagged');
+
+        } else {
+            console.error('Failed to flag comment:', response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.error('Error flagging comment:', error);
+    });
+}
+
+
+function flagSubComment(element) {
+    var subcommentId = element.getAttribute('data-subcomment-id');
+    var commentId = element.getAttribute('data-comment-id');
+    console.log(commentId);
+
+    // Send a request to the server to flag the subcomment
+    fetch(`/api/comments/${commentId}/subcomments/${subcommentId}/flag`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            commentId: commentId,
+            subcommentId: subcommentId,
+        }),
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("subcomment flagged");
+            element.classList.add('flagged');
+        } else {
+            console.error('Failed to flag subcomment:', response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.error('Error flagging subcomment:', error);
+    });
+}
+
+
+    
     function hideRequestForm() {
         var sendRequestForm = document.getElementById('sendRequestForm');
         sendRequestForm.classList.remove('show');
@@ -352,20 +468,13 @@
             window.location.href = url;
         }
         
-        function replyComment(element) {
-    var commentId = element.getAttribute('data-comment-id');
-    var replyForm = element.getAttribute('data-reply-form-id');
-    replyForm.style.display = 'block';
-}
+ 
 
-
-function replyComment(element) {
-    console.log('function called');
-    var commentId = element.getAttribute('data-comment-id');
-    var replyForm = document.getAttribute('reply-form-' + commentId);
-    replyForm.style.display = 'block';
-    replyForm.scrollIntoView({ behavior: 'smooth' });
-}
+ function replyComment(label) {
+    const replyFormId = label.getAttribute('data-comment-id');
+    const replyForm = document.querySelector(`form[data-reply-form-id="${replyFormId}"]`);
+    replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+ }
 
 
     // Other JavaScript code...
@@ -451,25 +560,36 @@ function replyComment(element) {
                             <label th:text="${username}" id="usernamedb" style="display:none"></label>
 
                         </div>
-                        <div id="preloadcomments">
-                            <th:block th:unless="${#lists.isEmpty(comments)}">
-                                <div th:each="comment : ${comments}" class="comment" th:id ="${comment.id}">
+                        <!-- Add the following HTML to your page where you display comments --><div id="preloadcomments">
+                         <th:block th:unless="${#lists.isEmpty(comments)}">
+                                <div th:each="comment : ${comments}" class="comment" th:id="${comment.id}">
+
                                     <div class="user-info">
                                         <span class="username" th:text="${comment.usrName}"></span>
                                     </div>
-                                    <div class="comment-content" th:text="${comment.text}">                                        
-                                        <button onclick="flagcomment(this)">flag</button>   
-                                    </div>     
-                                    <b><label  th:data-comment-id="${comment.id}" onclick="replyComment(this)" style="font-size: 10px;">reply</label></b>
-                        
-                                    <form class="reply-form" th:data-reply-form-id="${comment.id}" method="post" style="display:none">
-                                        <textarea placeholder="reply to this comment"></textarea>
-                                        <button type="submit">Reply</button>
+                                    <div class="comment-content" th:text="${comment.text}">
+                                    </div>
+                                    
+                        <i class="fas fa-flag" id="flag" th:attr="data-comment-id=${comment.id}"  onclick="flagComment(this)" style="margin:10px"></i> 
+                                    <u><b><label class="replyToComment" th:data-comment-id="${comment.id}" onclick="toggleReplyForm(this)" style="font-size: 11px;color:blue">Reply</label></b></u>
+                                    <form class="reply-form" th:data-reply-form-id="${comment.id}" style="display:none">
+                                        <input type="text" th:id="'subCommentText_' + ${comment.id}" />
+                                        <button type="button" th:id="'replyBtn_' + ${comment.id}">Reply</button>
                                     </form>
+                                    
+                                    <div th:each="subcomment : ${comment.replies}" class="subcomment">
+                                        <div class="user-info">
+                                            <span class="username" th:text="${subcomment.usrName}"></span>
+                                        </div>
+                                        <span class="subcomment-content" th:text="${subcomment.text}">                                          
+                                        </span>
+                                        <br>
+                                        <i class="fas fa-flag" th:attr="data-comment-id=${comment.id}, data-subcomment-id=${subcomment.id}" onclick="flagSubComment(this)"></i>
+
+                                    </div>
                                 </div>
                             </th:block>
-                        </div>
-                             
+                        </div>     
                 </div>
             </div>
         </div>
@@ -487,19 +607,24 @@ function replyComment(element) {
 
 
     <script>
+
+    var usernameValue;
+    document.addEventListener("DOMContentLoaded", function() {
+    usernameValue = document.getElementById('usernamedb').textContent;
+    
+});
         
         var projectNameElement = document.getElementById("projName"); 
-
         var projectId = projectNameElement.textContent; 
-        console.log("project name is " +projectId);
-    
-    async function addComment(event) {
+        console.log("project name is " +projectId);    
+   
+        async function addComment(event) {
         event.preventDefault();
     
         var commentText = document.getElementById('commentText').value;
         
         var usrName = usernameValue;
-    
+    console.log(usrName+"user name value");
         try {
             const response = await fetch(`/api/comments`, {
                 method: 'POST',
@@ -509,73 +634,102 @@ function replyComment(element) {
                 body: JSON.stringify({ projectId, text: commentText , usrName}),
             });
     
-            const comment = await response.json();
+            location.reload();
+            /*const comment = await response.json();
             var commentElement = createCommentElement(comment.text, comment.id);
             document.getElementById('comments').appendChild(commentElement);
     
-            document.getElementById('commentText').value = '';
+            document.getElementById('commentText').value = '';*/
         } catch (error) {
             console.error('Error adding comment:', error);
         }
     }
-    
-    async function addReply(event, commentId, replyTextarea) {
-        event.preventDefault();
 
-    var replyTextarea = document.getElementById(`replyText_${commentId}`);
-    var replyText = replyTextarea.value;
-
+   
+function toggleReplyForm(label) {
+    const replyFormId = label.getAttribute('data-comment-id');
+    const commentDiv = document.getElementById(replyFormId);
+    const replyForm = commentDiv.querySelector('.reply-form');
+    replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+}
+document.querySelectorAll('button[id^="replyBtn_"]').forEach(function (button) {
+    button.addEventListener('click', function () {
+        const commentId = this.id.replace('replyBtn_', '');
+        const input = document.getElementById(`subCommentText_${commentId}`);
+        addReply(input, commentId);
+    });
+});
+async function addReply(input, commentId) {
     
-        try {
-            const response = await fetch(`/api/comments/${commentId}/replies`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ text: replyText }),
-            });
-    
-            const updatedComment = await response.json();
-            var replyElement = createCommentElement(updatedComment.replies[updatedComment.replies.length - 1].text, updatedComment.id);
-            var commentContainer = document.getElementById(`comment_${commentId}`);
-            commentContainer.appendChild(replyElement);
-    
-            replyTextarea.value = '';
-        } catch (error) {
-            console.error('Error adding reply:', error);
+    var usrName = usernameValue;
+    try {
+        const replyText = input.value.trim();
+        if (replyText === '') {
+            console.warn('Reply text cannot be empty.');
+            return;
         }
-    }
 
+
+        const response = await fetch(`/api/comments/${commentId}/replies`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: replyText, commentId, usrName }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to add reply: ${response.status} ${response.statusText}`);
+        }
+
+        const updatedComment = await response.json();
+
+        // Log the received data to understand its structure
+        console.log('Updated Comment:', updatedComment);
+
+        // Check if replies array exists
+        if (updatedComment && updatedComment.replies && updatedComment.replies.length > 0) {
+            const replyElement = createSubcommentElement(updatedComment.replies[updatedComment.replies.length - 1]);
+            console.log(replyElement);
+            const commentContainer = document.getElementById(`${commentId}`);
+            if (commentContainer) {
+            commentContainer.appendChild(replyElement);
+        } else {
+        console.error('Comment container not found:', commentId);
+    }   
+
+        } else {
+            console.error('Invalid or missing replies array in the updated comment:', updatedComment);
+        }
+
+        input.value = '';
+    } catch (error) {
+        console.error('Failed to add reply:', error);
+    }
+}
+
+function createSubcommentElement(subcomment) {
+    const element = document.createElement('div');
+    element.id = `subcomment_${subcomment.id}`;
+    element.classList.add('subcomment');
+    element.innerHTML = `
+       <div class="username-info">
+       <b>  <span class="username">${subcomment.usrName}</span></b>
+         </div>
+         <span class="subcomment-content">${subcomment.text}</span>
+    `;
+    return element;
+}    
     function redirectToWebsite() {
     window.location.href = 'https://www.nwmissouri.edu/'; // Replace with the desired website URL
 }
-// Update the function to load comments based on the project name
-async function loadComments(projectName) {
-    try {
-        const response = await fetch(`/api/comments/load?projectName=${projectName}`);
-        const comments = await response.json();
 
-        // Get the comments container element
-        const commentsContainer = document.getElementById('comments');
-
-        // Clear existing comments before rendering new ones
-        commentsContainer.innerHTML = '';
-
-        // Loop through the comments and render them on the page
-        comments.forEach(comment => {
-            Console.log(comment);
-            const commentElement = createCommentElement(comment.text, comment.id);
-            commentsContainer.appendChild(commentElement);
-        });
-    } catch (error) {
-        console.error('Error loading comments:', error);
-    }
-}
 
     function createCommentElement(commentText, commentId) {
 
         var commentDiv = document.createElement('div');
             commentDiv.className = 'comment';
+            commentDiv.id = commentId;
 
             var userInfoDiv = document.createElement('div');
             userInfoDiv.className = 'user-info';
@@ -595,51 +749,36 @@ async function loadComments(projectName) {
             contentDiv.className = 'content';
             contentDiv.textContent = commentText;
             commentDiv.appendChild(contentDiv);
+        
+            
+            var replyButton = document.createElement('button');
+            replyButton.type = 'button';
+            replyButton.textContent = 'Reply';
+            replyForm.appendChild(replyButton);
 
-            var replyForm = document.createElement('form');
+
+            /*var replyForm = document.createElement('form');
             replyForm.className = 'reply-form';
 
             var replyTextarea = document.createElement('textarea');
             replyTextarea.placeholder = 'Reply to this comment';
-            replyTextarea.id= commentId + 
+            replyTextarea.id = commentId + '-reply'; 
+
             replyForm.appendChild(replyTextarea);
 
-            var replyButton = document.createElement('button');
-            replyButton.type = 'submit';
-            replyButton.textContent = 'Reply';
-            replyForm.appendChild(replyButton);
 
             commentDiv.appendChild(replyForm);
             
     replyForm.onsubmit = function(event) {
         event.preventDefault();
                 addReply(event, commentId,replyTextarea);
-            };
+            };*/
             
 
             return commentDiv;
     }
     
     
- /*       window.onload = function() {
- if (window.location.search) {
-    var queryString = window.location.search.substring(1);
-    
-    var params = queryString.split('&');
-    
-    for (var i = 0; i < params.length; i++) {
-
-      var pair = params[i].split('=');
-      
-      if (pair[0] === 'name') {
-        projName = decodeURIComponent(pair[1]);
-        loadComments(projName);
-        console.log(decodeURIComponent(pair[1]));
-        
-      }
-    }
- }
-};*/
         
     
 
@@ -647,29 +786,7 @@ async function loadComments(projectName) {
         function redirectToWebsite() {
             window.location.href = 'https://www.nwmissouri.edu/'; // Replace with the desired website URL
         }
-/*
-        function addSubcomment(parentCommentId, subcommentText) {
-    var subcommentData = {
-        // Populate subcomment data here (e.g., subcommentText, parentCommentId)
-    };
 
-    // Make an AJAX POST request to save the subcomment
-    fetch('/api/comments/addSubcomment', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(subcommentData)
-    })
-    .then(response => response.json())
-    .then(savedSubcomment => {
-        // Handle the saved subcomment, update the UI if needed
-        console.log('Subcomment saved:', savedSubcomment);
-    })
-    .catch(error => {
-        console.error('Error saving subcomment:', error);
-    });
-}*/
 
     </script>
 </body>
