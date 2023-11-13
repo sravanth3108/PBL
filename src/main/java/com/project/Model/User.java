@@ -2,6 +2,7 @@ package com.project.Model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "users")
 public class User {
@@ -13,6 +14,18 @@ public class User {
     private String password;
     private String mNumber;
     private String profilePictureURL;
+    @Field("profilePicture")
+    private byte[] profilePicture;
+
+    
+
+
+	public byte[] getProfilePicture() {
+		return profilePicture;
+	}
+	public void setProfilePicture(byte[] profilePicture) {
+		this.profilePicture = profilePicture;
+	}
 	public String getMail() {
 		return mail;
 	}

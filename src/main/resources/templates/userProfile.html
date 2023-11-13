@@ -9,6 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">      
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -205,6 +206,24 @@
     padding: 56px !important;
   }
 }
+.edit-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: #ffffff;
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.prof-picture {
+    max-height: 373px;
+    max-width:373px;
+    
+}
+.modal-dialog {
+    margin-top: 10%;
+}
+
 
 body {
   background-color: #eeeeee;
@@ -329,8 +348,10 @@ body {
     </header>
     <div class="container mt-5">
         <div class="container mt-5 mb-5" style = "position: fixed; left:50px;top:10%">
-            <div class="row no-gutters">
-                <div class="col-md-4 col-lg-4"><img src="https://i.imgur.com/aCwpF7V.jpg"></div>
+            <div class="row no-gutters">                
+                <div class="col-md-4 col-lg-4"><img class="prof-picture mb-3"th:src="'data:image/jpeg;base64,' + ${profilePicture}" alt="Profile Picture">          
+                <i class="fas fa-pencil-alt edit-icon" data-toggle="modal" data-target="#uploadImageModal"></i>
+            </div>                         
                 <div class="col-md-8 col-lg-8">
                     <div class="d-flex flex-column">
                         <div class="d-flex flex-row justify-content-between align-items-center p-5 bg-dark text-white">
@@ -430,6 +451,26 @@ body {
             </div>
         </div>
     </div>
+<!-- Add this modal at the end of your HTML body -->
+<div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upload Profile Picture</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your image upload form goes here -->
+                <form id="imageUploadForm" action="/uploadProfilePicture" method="post" enctype="multipart/form-data">
+                    <input type="file" name="profilePicture" accept="image/*">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 

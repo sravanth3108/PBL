@@ -1,6 +1,7 @@
 package com.project.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,9 +14,11 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,26 +92,34 @@ public class PostProjects {
         List<PostProjectsModel> pending = projectRepo.findByApproved('m');
         int approvedCount = approved.size();
         int rejectedCount = rejected.size();
-        int pendingCount = pending.size();
+        int pendingCount = pending.size();        
+        
         user = userRepo.findById(email).orElse(null);
+        String profilePicURL = user.getProfilePictureURL();
     	bearcat = bearcatRepo.findById(email).orElse(null);
         if(user==null)
         {
-
             username = bearcat.getFname() + " " +bearcat.getLname();
+            profilePicURL = bearcat.getProfilePictureURL();
+                       
         }
         else
         {
 
             username = user.getFname() + " " +user.getLname();
+            profilePicURL = user.getProfilePictureURL();
+            byte[] profilePicture = user.getProfilePicture();
+            model.addAttribute("profilePicture", profilePicture != null ? Base64.getEncoder().encodeToString(profilePicture) : "");
         }
-        System.out.print(username);
+        
+       System.out.print(username);
        model.addAttribute("email",email);
        model.addAttribute("username", username);
        model.addAttribute("approved", approvedCount);
        model.addAttribute("pending", pendingCount);
        model.addAttribute("rejected", rejectedCount);       
        model.addAttribute("count", rejectedCount);
+       model.addAttribute("profilePictureURL",profilePicURL );
         
         List<PostProjectsModel> project = projectRepo.findByUserMail(email);
         model.addAttribute("projects", project);
@@ -115,6 +127,36 @@ public class PostProjects {
          System.out.println(project);
         return modelAndView;
     }
+
+	    
+
+	    @PostMapping("/uploadProfilePicture")
+	    public String uploadProfilePicture(HttpSession session, @RequestParam("profilePicture") MultipartFile file) throws IOException {
+
+	        String mail = (String) session.getAttribute("email");
+	       
+	            // Check if the uploaded file is not empty
+	            if (!file.isEmpty()) {
+	                // Convert the MultipartFile to a byte array
+	                byte[] fileBytes = file.getBytes();
+
+	                // Update the user's profile picture in the database
+	                User user = userRepo.findById(mail).orElse(null);
+
+	                if (user != null) {
+	                    // Update the profile picture
+	                    user.setProfilePicture(fileBytes);
+
+	                    // Save the updated user to the database
+	                    userRepo.save(user);
+	                    
+	                }
+	            }
+	            
+                return "redirect:/userProfile?mail=" + mail;
+                
+	    }
+
 	
 	    @RequestMapping("/postProjects")
 	    public ModelAndView postProjects(HttpSession session, Model model) {	    	
@@ -207,7 +249,7 @@ public class PostProjects {
 	    return modelAndView;
 	}
 	
-	@GetMapping("/projects")
+	@GetMapping("/")
 	public String projects(Model model) throws java.text.ParseException {
 		    List<PostProjectsModel> projects = projectRepo.findAll();
 		    List<PostProjectsModel> expiredProjects = new ArrayList<>(); // Create a list to store expired projects
