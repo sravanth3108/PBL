@@ -48,10 +48,12 @@ import com.project.Model.Bearcat;
 import com.project.Model.Comments;
 import com.project.Model.PostProjectsModel;
 import com.project.Model.Requests;
+import com.project.Model.Subcomments;
 import com.project.Model.User;
 import com.project.Repository.BearcatRepository;
 import com.project.Repository.CommentRepository;
 import com.project.Repository.PostProjectsRepository;
+import com.project.Repository.SubcommentRepository;
 import com.project.Repository.UserRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -63,71 +65,84 @@ public class PostProjects {
 	  String subject;
 	  User user;
 	  Bearcat bearcat;
+	  
 
 	    private PostProjectsRepository projectRepo;
 	    private CommentRepository commentRepo;
 	    private UserRepository userRepo;
+	    private SubcommentRepository subcommentRepo;
 
 	    private BearcatRepository bearcatRepo;
 
 	@Autowired
-    public PostProjects(UserRepository userRepo, PostProjectsRepository projectRepo,BearcatRepository bearcatRepo,CommentRepository commentRepo, EmailService emailService) {
+    public PostProjects(UserRepository userRepo, PostProjectsRepository projectRepo,BearcatRepository bearcatRepo,CommentRepository commentRepo, EmailService emailService, SubcommentRepository subcommentRepo) {
         this.userRepo = userRepo;
         this.projectRepo = projectRepo;
         this.bearcatRepo= bearcatRepo;
         this.emailService= emailService;
         this.commentRepo = commentRepo;
+        this.subcommentRepo = subcommentRepo;
     }
     private String projectName;
 	 int count =0;
+	 @GetMapping("/userProfile")
+	 public ModelAndView getUserProfile(@RequestParam("mail") String email, HttpSession session, Model model) {
+	     ModelAndView modelAndView = new ModelAndView();
+	     modelAndView.setViewName("userProfile.html");
+	     session.setAttribute("email", email);
+	     String username;
 
-	    @GetMapping("/userProfile")
-	    public ModelAndView getUserProfile(@RequestParam("mail") String email,HttpSession session, Model model)  {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("userProfile.html");
-        session.setAttribute("email", email);
-        String username;
-        List<PostProjectsModel> approved = projectRepo.findByApproved('y');
-        List<PostProjectsModel> rejected = projectRepo.findByApproved('n');
-        List<PostProjectsModel> pending = projectRepo.findByApproved('m');
-        int approvedCount = approved.size();
-        int rejectedCount = rejected.size();
-        int pendingCount = pending.size();        
-        
-        user = userRepo.findById(email).orElse(null);
-        String profilePicURL = user.getProfilePictureURL();
-    	bearcat = bearcatRepo.findById(email).orElse(null);
-        if(user==null)
-        {
-            username = bearcat.getFname() + " " +bearcat.getLname();
-            profilePicURL = bearcat.getProfilePictureURL();
-                       
-        }
-        else
-        {
+	     int approvedCount = 0;
+	     int rejectedCount = 0;
+	     int pendingCount = 0;
 
-            username = user.getFname() + " " +user.getLname();
-            profilePicURL = user.getProfilePictureURL();
-            byte[] profilePicture = user.getProfilePicture();
-            model.addAttribute("profilePicture", profilePicture != null ? Base64.getEncoder().encodeToString(profilePicture) : "");
-        }
-        
-       System.out.print(username);
-       model.addAttribute("email",email);
-       model.addAttribute("username", username);
-       model.addAttribute("approved", approvedCount);
-       model.addAttribute("pending", pendingCount);
-       model.addAttribute("rejected", rejectedCount);       
-       model.addAttribute("count", rejectedCount);
-       model.addAttribute("profilePictureURL",profilePicURL );
-        
-        List<PostProjectsModel> project = projectRepo.findByUserMail(email);
-        model.addAttribute("projects", project);
-        model.addAttribute("count", project.size());
-         System.out.println(project);
-        return modelAndView;
-    }
+	     List<PostProjectsModel> approved = projectRepo.findByApproved('y');
+	     List<PostProjectsModel> rejected = projectRepo.findByApproved('n');
+	     List<PostProjectsModel> pending = projectRepo.findByApproved('m');
 
+	     for (PostProjectsModel pps : approved) {
+	         if (pps.getUserMail() != null && pps.getUserMail().trim().equals(email)) {
+	             approvedCount++;
+	         }
+	     }
+	     for (PostProjectsModel pps : rejected) {
+	         if (pps.getUserMail() != null && pps.getUserMail().trim().equals(email)) {
+	             rejectedCount++;
+	         }
+	     }
+	     for (PostProjectsModel pps : pending) {
+	         if (pps.getUserMail() != null && pps.getUserMail().trim().equals(email)) {
+	             pendingCount++;
+	         }
+	     }
+
+	     user = userRepo.findById(email).orElse(null);
+	     String profilePicURL = user.getProfilePictureURL();
+	     bearcat = bearcatRepo.findById(email).orElse(null);
+	     if (user == null) {
+	         username = bearcat.getFname() + " " + bearcat.getLname();
+	         profilePicURL = bearcat.getProfilePictureURL();
+	     } else {
+	         username = user.getFname() + " " + user.getLname();
+	         profilePicURL = user.getProfilePictureURL();
+	         byte[] profilePicture = user.getProfilePicture();
+	         model.addAttribute("profilePicture", profilePicture != null ? Base64.getEncoder().encodeToString(profilePicture) : "");
+	     }
+
+	     model.addAttribute("email", email);
+	     model.addAttribute("username", username);
+	     model.addAttribute("approved", approvedCount);
+	     model.addAttribute("pending", pendingCount);
+	     model.addAttribute("rejected", rejectedCount);
+	     model.addAttribute("count", rejectedCount);
+	     model.addAttribute("profilePictureURL", profilePicURL);
+
+	     List<PostProjectsModel> project = projectRepo.findByUserMail(email);
+	     model.addAttribute("projects", project);
+	     model.addAttribute("count", project.size());
+	     System.out.println(project);
+	     return modelAndView;
+	 }
 	    
 
 	    @PostMapping("/uploadProfilePicture")
@@ -350,6 +365,7 @@ public class PostProjects {
 	        String projReq = project.getProjReq();
 	        String projType = project.getProjType();
 	        int projectExp = project.getProjExp();
+	        String profilePic ="";
 	        
 	        // Add project details to the model
 	        model.addAttribute("projDescFull", projDescfull);
@@ -368,6 +384,9 @@ public class PostProjects {
 	    	if (user != null) {
 	    	    System.out.println(user.getUsrName());
 	    	    model.addAttribute("username", user.getUsrName());
+
+		         byte[] profilePicture = user.getProfilePicture();
+		         model.addAttribute("profilePicture", profilePicture != null ? Base64.getEncoder().encodeToString(profilePicture) : "");
 	    	}
 	    	else if(bearcat!=null)
 	    	{
@@ -375,16 +394,43 @@ public class PostProjects {
 	    	    model.addAttribute("username", bearcat.getUsrName());
 	    		
 	    	}
-	    		
-	        
-	        // Retrieve comments based on the project name
 	    	List<Comments> comments = commentRepo.findByProjectId(projectName);
+	    	Collections.reverse(comments);
 
-	        Collections.reverse(comments);
+	    	List<Comments> updatedComments = new ArrayList<>();  // Collect updated comments
+	    	List<Subcomments> updatedSubcomments = new ArrayList<>();  // Collect updated subcomments
+
+	    	for (Comments comment : comments) {
+	    	    String commenterEmail = comment.getUsrName(); 
+	    	    System.out.println("Usernames for comments"+commenterEmail);
+	    	    User commenter = userRepo.findByUsrName(commenterEmail);
+	    	    if (commenter != null) {
+	    	    	System.out.println(commenter.getProfilePicture() + "URL");
+	    	        comment.setProfilePicture(Base64.getEncoder().encodeToString(commenter.getProfilePicture()));
+	    	        System.out.println(comment.getProfilePicture() + " get pro pic");
+	    	        // Add null check for replies
+	    	        List<Subcomments> subcomments = comment.getReplies();
+	    	        if (subcomments != null) {
+	    	            for (Subcomments subcomment : subcomments) {
+	    	                String subcommenterEmail = subcomment.getUsrName();
+	    	                User subcommenter = userRepo.findByUsrName(subcommenterEmail);
+	    	                if (subcommenter != null) {
+	    	                    subcomment.setProfilePicture(subcommenter.getProfilePicture() != null ? Base64.getEncoder().encodeToString(subcommenter.getProfilePicture()) : "");
+	    	                    updatedSubcomments.add(subcomment);
+	    	                }
+	    	            }
+	    	        }
+	    	        updatedComments.add(comment);
+	    	    }
+	    	}
+
+	    	// Save all comments and subcomments outside the loop
+	    	commentRepo.saveAll(updatedComments);
+	    	subcommentRepo.saveAll(updatedSubcomments);
 	    	System.out.println("Retrieved comments for project: " + projectName);
 	    	System.out.println("Number of comments: " + comments.size());
+	    	model.addAttribute("email",emails);
 	        model.addAttribute("comments", comments);
-	        model.addAttribute("email", emails);
 	        System.out.println(comments);
 	        // Set the view name to "projDetails"
 		    ModelAndView modelAndView = new ModelAndView();
@@ -397,7 +443,8 @@ public class PostProjects {
 	        // For example, redirect to an error page
 	        return new ModelAndView("redirect:/error"); // Assuming you have an error page mapped to "/error"
 	    }
-	}
+
+}
 
 	 
 	 @GetMapping("/editProjects")

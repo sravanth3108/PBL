@@ -30,8 +30,8 @@
             margin-bottom: 20px;
             display: block;
             top:18%;
-            height: 80%; /* Set a percentage of the parent container height */
-            max-height: 800px; /* Set a maximum height if needed */
+            height: 80%; 
+            max-height: 800px; 
             overflow-y: auto;
             width:80%;
             
@@ -513,7 +513,7 @@ function flagSubComment(element) {
                     </a>
                 </li>
                 <li class="log_out">
-                    <a href="#">
+                    <a href="/">
                         <i class='bx bx-log-out'></i>
                         <span class="links_name">Log out</span>
                     </a>
@@ -560,36 +560,37 @@ function flagSubComment(element) {
                             <label th:text="${username}" id="usernamedb" style="display:none"></label>
 
                         </div>
-                        <!-- Add the following HTML to your page where you display comments --><div id="preloadcomments">
-                         <th:block th:unless="${#lists.isEmpty(comments)}">
+                        <div id="preloadcomments">
+                            <th:block th:unless="${#lists.isEmpty(comments)}">
                                 <div th:each="comment : ${comments}" class="comment" th:id="${comment.id}">
-
                                     <div class="user-info">
+                                        <img th:src="'data:image/jpeg;base64,' + ${comment.profilePicture}" />
                                         <span class="username" th:text="${comment.usrName}"></span>
                                     </div>
-                                    <div class="comment-content" th:text="${comment.text}">
-                                    </div>
-                                    
-                        <i class="fas fa-flag" id="flag" th:attr="data-comment-id=${comment.id}"  onclick="flagComment(this)" style="margin:10px"></i> 
+                                    <div class="comment-content" th:text="${comment.text}"></div>
+                                          
+                                    <i class="fas fa-flag" th:attr="data-comment-id=${comment.id}" onclick="flagComment(this)" style="margin:10px"></i> 
                                     <u><b><label class="replyToComment" th:data-comment-id="${comment.id}" onclick="toggleReplyForm(this)" style="font-size: 11px;color:blue">Reply</label></b></u>
+                                    
                                     <form class="reply-form" th:data-reply-form-id="${comment.id}" style="display:none">
                                         <input type="text" th:id="'subCommentText_' + ${comment.id}" />
                                         <button type="button" th:id="'replyBtn_' + ${comment.id}">Reply</button>
                                     </form>
                                     
-                                    <div th:each="subcomment : ${comment.replies}" class="subcomment">
-                                        <div class="user-info">
-                                            <span class="username" th:text="${subcomment.usrName}"></span>
+                                    <th:block th:unless="${#lists.isEmpty(comment.replies)}">
+                                        <div th:each="subcomment : ${comment.replies}" class="subcomment">
+                                            <div class="user-info">
+                                                <img th:src="'data:image/jpeg;base64,' + ${subcomment.profilePicture}" />
+                                                <span class="username" th:text="${subcomment.usrName}"></span>
+                                            </div>
+                                            <span class="subcomment-content" th:text="${subcomment.text}"></span>                                                                           
+                                            <br>
+                                            <i class="fas fa-flag" th:attr="data-comment-id=${comment.id}, data-subcomment-id=${subcomment.id}" onclick="flagSubComment(this)"></i>
                                         </div>
-                                        <span class="subcomment-content" th:text="${subcomment.text}">                                          
-                                        </span>
-                                        <br>
-                                        <i class="fas fa-flag" th:attr="data-comment-id=${comment.id}, data-subcomment-id=${subcomment.id}" onclick="flagSubComment(this)"></i>
-
-                                    </div>
+                                    </th:block>
                                 </div>
                             </th:block>
-                        </div>     
+                        </div>   
                 </div>
             </div>
         </div>
@@ -708,7 +709,7 @@ async function addReply(input, commentId) {
     }
 }
 
-function createSubcommentElement(subcomment) {
+function createSubcommentElement(subcomment,comment) {
     const element = document.createElement('div');
     element.id = `subcomment_${subcomment.id}`;
     element.classList.add('subcomment');
@@ -717,6 +718,8 @@ function createSubcommentElement(subcomment) {
        <b>  <span class="username">${subcomment.usrName}</span></b>
          </div>
          <span class="subcomment-content">${subcomment.text}</span>
+         <br>         
+         <i class="fas fa-flag" th:attr="data-subcomment-id=${subcomment.id}" onclick="flagSubComment(this)"></i>
     `;
     return element;
 }    

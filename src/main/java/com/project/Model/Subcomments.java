@@ -11,6 +11,17 @@ public class Subcomments {
     private String text;
     private String usrName;
     private int flags;
+    private String profilePicture;
+
+    // getters and setters
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 
 	public String getText() {
 		return text;

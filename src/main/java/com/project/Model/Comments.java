@@ -14,6 +14,16 @@ public class Comments {
     private List<Subcomments> replies;
     private String usrName;
     private int flags;
+    
+    private String profilePicture;
+
+    // getters and setters
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    
 	public String getId() {
 		return id;
 	}
@@ -50,6 +60,16 @@ public class Comments {
 	public void setFlags(int flags) {
 		this.flags = flags;
 	}
+
+	
+
+	public void setProfilePicture(String encodeToString) {
+		// TODO Auto-generated method stub
+		this.profilePicture = encodeToString;
+		
+	}
+
+
 
     
 }

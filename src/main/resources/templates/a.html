@@ -120,7 +120,7 @@
       <img src="https://avatars0.githubusercontent.com/u/44843452?s=280&v=4">
     </div>
     <h2 id="h2">Northwest Missouri State University</h2>
-    <button class="login-button">Login</button>
+    <button class="login-button" onclick = "loginButton()" >Login</button>
   </header>
 
   <h3>PBL Projects</h3>
@@ -131,26 +131,17 @@
         <h1 class="project-name" th:text="${project.projName}"></h1>
         <p class="project-description" th:text="${project.projDesc}"></p>
       </div>
-      <div class="project-actions">
-        <a href="#" th:attr="data-project-name=${project.projName}" onclick="selectProject(this)">View Details</a>
-        <a href="#" th:attr="data-project-name=${project.projName}" onclick="flagProject(this)">Flag</a>
       </div>
     </div>
   </div>
 
-  <script>
-    function selectProject(element) {
-      var projectName = element.getAttribute('data-project-name');
-      var url = '/projectDetails?name=' + projectName;
-      window.location.href = url;
-    }
-
-    function flagProject(element) {
-      var projectName = element.getAttribute('data-project-name');
-      var url = '/flagProject?name=' + projectName;
-      window.location.href = url;
-    }
-  </script>
+  
 </body>
+<script>
+  function loginButton(){
+  window.location.href='/login';
+}
+</script>
+</script>
 
 </html>
