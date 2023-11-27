@@ -11,11 +11,61 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" th:href="@{/css/viewPrj.css}" type="text/css" >
+    <link rel="stylesheet" th:href="@{/css/viewPrj.css}" type="text/css">
 
-
-   
     <script>
+
+    function likeProject(element) {
+        var projectName = element.getAttribute('data-project-name');
+        var url = '/likeProject?projectName=' + projectName;
+
+        fetch(url, {
+            method: 'POST',
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error('Failed to like project');
+            }
+        })
+        .then(data => {
+            console.log(data); // You can handle the success message as needed
+            // Update the like count in the UI
+            var likeCountElement = element.nextElementSibling;
+            likeCountElement.textContent = parseInt(likeCountElement.textContent) + 1;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
+    function dislikeProject(element) {
+        var projectName = element.getAttribute('data-project-name');
+        var url = '/dislikeProject?projectName=' + projectName;
+
+        fetch(url, {
+            method: 'POST',
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error('Failed to dislike project');
+            }
+        })
+        .then(data => {
+            console.log(data); // You can handle the success message as needed
+            // Update the dislike count in the UI
+            var dislikeCountElement = element.nextElementSibling;
+            dislikeCountElement.textContent = parseInt(dislikeCountElement.textContent) + 1;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
+
         function selectProject(element) {
             var projectName = element.getAttribute('data-project-name');
             var url = '/projectDetails?name=' + projectName;
@@ -38,23 +88,148 @@
             }
         }
 
-        function searchProjects()
-        {
-            
+        function searchProjects() {
             var projectName = document.getElementById("search").value;
             var url = '/searchProjects?keywords=' + projectName;
-            window.location.href =url;
-
-        }
-        function userProfile()
-        {
-            var mail = document.getElementById("email").textContent;
-            var url = "/userProfile?mail="+mail;
             window.location.href = url;
         }
-        
+
+        function userProfile() {
+            var mail = document.getElementById("email").textContent;
+            var url = "/userProfile?mail=" + mail;
+            window.location.href = url;
+        }
+
+        function redirectUser(element) {
+
+        var userMail = element.getAttribute('data-user-name');
+        var url = '/userProfilePage?usermail=' + userMail;
+        window.location.href = url;
+
+         }
+
     </script>
-    </head>
+ <style>
+    body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    /* Adjustments for smaller screens */
+    @media screen and (max-width: 768px) {
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+        }
+
+        .container {
+            margin-left: 0;
+        }
+
+        .searchContent {
+            margin-left: 0;
+        }
+
+        .newcontainer {
+            margin-left: 0;
+        }
+    }
+
+    .newcontainer {
+        position: fixed;
+        left: 255px;
+        top: 150px;
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+        /* Enable vertical scrolling */
+    }
+
+    .project-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin: 10px;
+        padding: 15px;
+        box-sizing: border-box;
+        transition: transform 0.3s;
+        width: 95%;
+        height: 100%;
+    }
+
+    .project-card:hover {
+        transform: scale(1.05);
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 90px;
+        left: 0;
+        height: 87%;
+        width: 240px;
+        background: #006a4e;
+        transition: all 0.5s ease;
+        z-index: 1;
+    }
+
+    .projectsList {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        padding: 20px;
+        z-index: 1000;
+        /* Adjusted max-height to ensure pagination is visible */
+    }
+
+    .project-card-container {
+        width: calc(33.33% - 20px);
+        box-sizing: border-box;
+        margin-bottom: 20px;
+    }
+
+    #h2 {
+        position: fixed;
+        width: 95%;
+        background-color: #006A4E;
+        color: #f0f0f0;
+        padding: 20px;
+        padding-top: 20px;
+        padding-bottom: 30px;
+        text-transform: uppercase;
+        text-align: center;
+        margin-left: 2cm;
+        letter-spacing: 3px;
+        box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.3);
+        top: -20px;
+        z-index: 1000;
+    }
+    /* Add this CSS code in your style section or external CSS file */
+.project-footer {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.posted-by {
+    font-size: 12px;
+    color: #777;
+}
+
+.user-name {
+    font-weight: bold;
+    margin-left:5px;
+}
+
+    </style>
+
+</head>
 
 <body>
     <header>
@@ -68,7 +243,7 @@
         <div class="sidebar left" id="viewprjsdbr">
             <ul class="nav-links">
                 <li>
-                    <a onclick = "userProfile()">
+                    <a onclick="userProfile()">
                         <i class='bx bx-grid-alt'></i>
                         <span class="links_name">Home</span>
                     </a>
@@ -92,61 +267,105 @@
                         <span class="links_name">Log out</span>
                     </a>
                 </li>
-            </ul> 
+            </ul>
         </div>
     </div>
+
+    <div class = "data">
     <div class="container searchContent">
         <input type="text" id="search">
-        <button id="searchButton" onclick = " searchProjects()">Search</button>
+        <button id="searchButton" onclick="searchProjects()">Search</button>
     </div>
 
-    <div class="project-container" >
-        <div th:text="${email}" style = "display:none" id="email"></div>
-      
-  <div class="custom-checkbox">
-    <input id="status" type="checkbox"  name="status" onchange="toggle()" >
-    <label for="status">
-      <div class="status-switch" data-unchecked="Active"  data-checked="Expired">
-      </div>
-    </label>
-  </div>
-  <div class = "projectsList">
-  <!-- Check if projects list is empty -->
-  <th:block th:if="${#lists.isEmpty(projects)}">
-    <div class="no-projects-message">
-        <p>No active projects available.</p>
+    <div class="newcontainer" >
+        <div th:text="${email}" style="display:none" id="email"></div>
+
+        <div class="custom-checkbox">
+            <input id="status" type="checkbox" name="status" onchange="toggle()">
+            <label for="status">
+                <div class="status-switch" data-unchecked="Active" data-checked="Expired"></div>
+            </label>
+        </div>
+        <div class="projectsList">
+            <th:block th:if="${#lists.isEmpty(projects)}">
+                <div class="no-projects-message">
+                    <p>No active projects available.</p>
+                </div>
+            </th:block>
+
+            <th:block th:unless="${#lists.isEmpty(projects)}">
+                <div th:each="project : ${projects}" class="project-card-container" >
+                    <div class="project-card">
+
+                        <div class="project-header">
+                            <h2 class="project-name" th:attr="data-project-name=${project.projName}" th:text="${project.projName}" onclick="selectProject(this)" ></h2>
+                        </div>
+
+                        <div class="project-description">
+                            <p th:text="${project.projDescfull}"></p>
+                        </div>
+<!-- Inside the project card container -->
+<div class="project-actions">
+    <span class="flag-project">
+        <i class="fas fa-flag" id="flag" th:attr="data-project-name=${project.projName}" onclick="flagProject(this)" style="margin:5px;"></i>
+    </span>
+
+    <span class="like-project">
+        <i class="fas fa-thumbs-up" id="like" th:attr="data-project-name=${project.projName}" onclick="likeProject(this)" style="margin:5px;"></i>
+        <span class="like-count" th:text="${project.likes}"></span>
+    </span>
+
+    <span class="dislike-project">
+        <i class="fas fa-thumbs-down" id="dislike" th:attr="data-project-name=${project.projName}" onclick="dislikeProject(this)" style="margin:5px;"></i>
+        <span class="dislike-count" th:text="${project.dislikes}"></span>
+    </span>
+
+    <span class="reply-project">
+        <i class="fas fa-reply" th:attr="data-project-name=${project.projName}" onclick="selectProject(this)" style="margin:5px;"></i>
+    </span>
+<div class="project-footer">
+    <span class="posted-by">Posted by </span>
+    <span class="user-name" th:text="${project.usrName}" th:attr="data-user-name=${project.userMail}"onclick = "redirectUser(this)" style="font-size: 12px; color: #555; margin-right: 5px;"></span>
     </div>
-</th:block>
+    <span class="useremailholder">
+        <i class="useremail" th:attr="data-user-name=${project.userMail}" th:text="${project.userMail}" style="display:none;margin:5px;"></i>
+    </span>
 
-<!-- Iterate over projects only if the list is not empty -->
-<th:block th:unless="${#lists.isEmpty(projects)}">
-        <div th:each="project : ${projects}" class="partition">
-            <a th:attr="data-project-name=${project.projName}" onclick="selectProject(this)">
-                <div class="partition1">
-                    <h1 class="project-name" th:text="${project.projName}"></h1>
-                </div>
-            </a>
-
-            <div class="partition2">
-                <div class="partition-content">
-                    <p th:text="${project.projDesc}"></p>
-                </div>
-            </div>
-            <a href="#">
-                <div class="partition3">
-                    <div class="partition-content star-project-user">
-                        <i class="fas fa-flag" id="flag" th:attr="data-project-name=${project.projName}"
-                            onclick="flagProject(this)"></i>
-                        <a href="#" th:attr="data-project-name=${project.projName}" onclick="selectProject(this)">reply</a>
-                        <a href="#" th:text ="${project.usrName}"></a>
+</div>
                     </div>
                 </div>
-            </a>
+            </th:block>
+        </div><div class="pagination">
+            <ul class="pagination">
+                <li th:if="${currentPage > 0}">
+                    <a th:href="@{/viewProjects(page=0)}" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li th:if="${currentPage > 0}">
+                    <a th:href="@{/viewProjects(page=${currentPage - 1})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}" th:class="${pageNum == currentPage ? 'active' : ''}">
+                    <a th:href="@{/viewProjects(page=${pageNum})}" th:text="${pageNum + 1}"></a>
+                </li>
+                <li th:if="${currentPage < totalPages - 1}">
+                    <a th:href="@{/viewProjects(page=${currentPage + 1})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li th:if="${currentPage < totalPages - 1}">
+                    <a th:href="@{/viewProjects(page=${totalPages - 1})}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            </ul>
         </div>
-    </div>
-</th:block>
+        
+        
+            </div>
 </div>
-
 </body>
 
 </html>

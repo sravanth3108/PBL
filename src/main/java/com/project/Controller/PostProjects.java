@@ -1,6 +1,9 @@
 package com.project.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Controller;
@@ -34,6 +37,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -96,8 +100,8 @@ public class PostProjects {
 	     int rejectedCount = 0;
 	     int pendingCount = 0;
 
-	     List<PostProjectsModel> approved = projectRepo.findByApproved('y');
-	     List<PostProjectsModel> rejected = projectRepo.findByApproved('n');
+	     List<PostProjectsModel> approved = projectRepo.findByApproved('a');
+	     List<PostProjectsModel> rejected = projectRepo.findByApproved('r');
 	     List<PostProjectsModel> pending = projectRepo.findByApproved('m');
 
 	     for (PostProjectsModel pps : approved) {
@@ -117,7 +121,7 @@ public class PostProjects {
 	     }
 
 	     user = userRepo.findById(email).orElse(null);
-	     String profilePicURL = user.getProfilePictureURL();
+	     String profilePicURL = null;
 	     bearcat = bearcatRepo.findById(email).orElse(null);
 	     if (user == null) {
 	         username = bearcat.getFname() + " " + bearcat.getLname();
@@ -143,6 +147,144 @@ public class PostProjects {
 	     System.out.println(project);
 	     return modelAndView;
 	 }
+	 
+	 @GetMapping("/userProfilePage")
+	 public ModelAndView getUserProfileFlag(@RequestParam("usermail") String email,  Model model) {
+	     ModelAndView modelAndView = new ModelAndView();
+	     modelAndView.setViewName("userProfilePage.html");
+	     String username;
+
+	     int approvedCount = 0;
+	     int rejectedCount = 0;
+	     int pendingCount = 0;
+
+	     List<PostProjectsModel> approved = projectRepo.findByApproved('a');
+	     List<PostProjectsModel> rejected = projectRepo.findByApproved('r');
+	     List<PostProjectsModel> pending = projectRepo.findByApproved('m');
+
+	     for (PostProjectsModel pps : approved) {
+	         if (pps.getUserMail() != null && pps.getUserMail().trim().equals(email)) {
+	             approvedCount++;
+	         }
+	     }
+	     for (PostProjectsModel pps : rejected) {
+	         if (pps.getUserMail() != null && pps.getUserMail().trim().equals(email)) {
+	             rejectedCount++;
+	         }
+	     }
+	     for (PostProjectsModel pps : pending) {
+	         if (pps.getUserMail() != null && pps.getUserMail().trim().equals(email)) {
+	             pendingCount++;
+	         }
+	     }
+
+	     user = userRepo.findById(email).orElse(null);
+	     String profilePicURL = null;
+	     bearcat = bearcatRepo.findById(email).orElse(null);
+	     if (user == null) {
+	         username = bearcat.getFname() + " " + bearcat.getLname();
+	         profilePicURL = bearcat.getProfilePictureURL();
+	     } else {
+	         username = user.getFname() + " " + user.getLname();
+	         profilePicURL = user.getProfilePictureURL();
+	         byte[] profilePicture = user.getProfilePicture();
+	         model.addAttribute("profilePicture", profilePicture != null ? Base64.getEncoder().encodeToString(profilePicture) : "");
+	     }
+
+	     model.addAttribute("email", email);
+	     model.addAttribute("username", username);
+	     model.addAttribute("approved", approvedCount);
+	     model.addAttribute("pending", pendingCount);
+	     model.addAttribute("rejected", rejectedCount);
+	     model.addAttribute("count", rejectedCount);
+	     model.addAttribute("profilePictureURL", profilePicURL);
+
+	     List<PostProjectsModel> project = projectRepo.findByUserMail(email);
+	     model.addAttribute("projects", project);
+	     model.addAttribute("count", project.size());
+	     System.out.println(project);
+	     return modelAndView;
+	 }
+
+	 
+	 @GetMapping("/userProjects")
+	 public ModelAndView getUserProjects( HttpSession session, Model model)
+	 {
+
+	    	String email = (String) session.getAttribute("email");
+		 ModelAndView modelAndView = new ModelAndView();
+	     modelAndView.setViewName("allprojects.html");
+		 List<PostProjectsModel> project = projectRepo.findByUserMail(email);
+	     model.addAttribute("projects", project);
+	     model.addAttribute("count", project.size());
+	     System.out.println(project);
+	     return modelAndView;
+	 
+	 
+	 }
+	 @GetMapping("/approvedProjects")
+	 public ModelAndView getapprovedProjects( HttpSession session, Model model)
+	 {
+
+	    	String email = (String) session.getAttribute("email");
+		 ModelAndView modelAndView = new ModelAndView();
+	     modelAndView.setViewName("allprojects.html");
+		 List<PostProjectsModel> project = projectRepo.findByApproved('a');
+		 List<PostProjectsModel> approvedProjects = new ArrayList<>();
+		 for (PostProjectsModel pps : project) {
+	         if (pps.getUserMail() != null && pps.getUserMail().trim().equals(email)) {
+	             approvedProjects.add(pps);
+	         }
+	     }
+	     model.addAttribute("projects", approvedProjects);
+	     model.addAttribute("count", project.size());
+	     System.out.println(project);
+	     return modelAndView;
+	 
+	 
+	 }
+	 @GetMapping("/rejectedProjects")
+	 public ModelAndView getRejectedProjects( HttpSession session, Model model)
+	 {
+
+	    	String email = (String) session.getAttribute("email");
+		 ModelAndView modelAndView = new ModelAndView();
+	     modelAndView.setViewName("allprojects.html");
+	     List<PostProjectsModel> project = projectRepo.findByApproved('r');
+		 List<PostProjectsModel> rejectedProjects = new ArrayList<>();
+		 for (PostProjectsModel pps : project) {
+	         if (pps.getUserMail() != null && pps.getUserMail().trim().equals(email)) {
+	             rejectedProjects.add(pps);
+	         }
+	     }
+	     model.addAttribute("projects", rejectedProjects);
+	     model.addAttribute("count", project.size());
+	     return modelAndView;
+	 
+	 
+	 }
+	   
+	 @GetMapping("/pendingProjects")
+	 public ModelAndView getPendingProjects( HttpSession session, Model model)
+	 {
+
+	    	String email = (String) session.getAttribute("email");
+		 ModelAndView modelAndView = new ModelAndView();
+	     modelAndView.setViewName("allprojects.html");
+
+	     List<PostProjectsModel> project = projectRepo.findByApproved('m');
+	     List<PostProjectsModel> pendingProjects = new ArrayList<>();
+		 for (PostProjectsModel pps : project) {
+	         if (pps.getUserMail() != null && pps.getUserMail().trim().equals(email)) {
+	             pendingProjects.add(pps);
+	         }
+	     }
+	     model.addAttribute("projects", pendingProjects);
+	     return modelAndView;
+	 
+	 
+	 }
+	   
 	    
 
 	    @PostMapping("/uploadProfilePicture")
@@ -249,7 +391,13 @@ public class PostProjects {
 
     	String email = (String) session.getAttribute("email");
     	 User user= userRepo.findById(email).orElse(null);
-    	 String userName = user.getUsrName();
+    	 String userName;
+    	 if(user!=null)
+    	 {
+    	 userName = user.getUsrName();
+    	 }
+    	 else
+    		 userName = bearcat.getUsrName();
     	System.out.println("email in post"+email);
 	    // Set any other attributes in the model as needed
 	    pps.setUserMail(email);
@@ -293,65 +441,95 @@ public class PostProjects {
 		}
 
 
-	
 	@GetMapping("/viewProjects")
-	public String viewProjects(Model model, HttpSession session) throws java.text.ParseException {
-		    List<PostProjectsModel> projects = projectRepo.findAll();
-		    List<PostProjectsModel> expiredProjects = new ArrayList<>(); // Create a list to store expired projects
+    public String viewProjects(Model model, HttpSession session,
+                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "9") int size) throws java.text.ParseException {
 
-		    SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		    SimpleDateFormat outputDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        // Retrieve all projects from the repository
+        List<PostProjectsModel> allProjects = projectRepo.findAll();
 
-		    for (PostProjectsModel pps : projects) {
-		        String startDateString = pps.getExpiryDate();
-		        try {
-		            Date expDate = inputDateFormat.parse(startDateString);
+        // Create a list to store expired projects
+        List<PostProjectsModel> expiredProjects = new ArrayList<>();
 
-		            if (expDate.after(new Date())) {
-		                pps.setExpiryDate(outputDateFormat.format(expDate)); // Update the expiry date format if needed
-		                expiredProjects.add(pps); // Add expired project to the list
-		            }
-		        } catch (ParseException e) {
-		            e.printStackTrace();
-		        }
-		    }
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat outputDateFormat = new SimpleDateFormat("MM/dd/yyyy"); // Initialize outputDateFormat
 
-		    model.addAttribute("projects", expiredProjects); // Add the list of expired projects to the model
+        // Filter expired projects
+        for (PostProjectsModel pps : allProjects) {
+            String startDateString = pps.getExpiryDate();
+            try {
+                Date expDate = inputDateFormat.parse(startDateString);
 
-		    model.addAttribute("email",(String)session.getAttribute("email"));
-		    return "view-projects";
-		}
+                if (expDate.after(new Date()) && pps.getApproved()=='a') {
+                    pps.setExpiryDate(outputDateFormat.format(expDate));
+                    expiredProjects.add(pps);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
 
+        // Create a PageRequest for pagination
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        // Convert the list of expired projects to a Page
+        int start = (int) pageRequest.getOffset();
+        int end = (start + pageRequest.getPageSize()) > expiredProjects.size() ? expiredProjects.size() : (start + pageRequest.getPageSize());
+        Page<PostProjectsModel> projectsPage = new PageImpl<>(expiredProjects.subList(start, end), pageRequest, expiredProjects.size());
+
+        model.addAttribute("projects", projectsPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", projectsPage.getTotalPages());
+
+        model.addAttribute("email", (String) session.getAttribute("email"));
+        return "view-projects";
+    }
+	
 	@GetMapping("/viewProjects/expired")
-	public String viewProjectsExp(Model model, HttpSession session) throws java.text.ParseException {
+	public String viewProjectsExp(Model model, HttpSession session,
+	                              @RequestParam(defaultValue = "0") int page,
+	                              @RequestParam(defaultValue = "9") int size) throws java.text.ParseException {
 
-	    List<PostProjectsModel> projects = projectRepo.findAll();
-	    List<PostProjectsModel> expiredProjects = new ArrayList<>(); // Create a list to store expired projects
+	    // Retrieve all projects from the repository
+	    List<PostProjectsModel> allProjects = projectRepo.findAll();
+
+	    // Create a list to store expired projects
+	    List<PostProjectsModel> expiredProjects = new ArrayList<>();
 
 	    SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	    SimpleDateFormat outputDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-	    for (PostProjectsModel pps : projects) {
+	    // Filter expired projects
+	    for (PostProjectsModel pps : allProjects) {
 	        String startDateString = pps.getExpiryDate();
 	        try {
 	            Date expDate = inputDateFormat.parse(startDateString);
 
-	            if (expDate.before(new Date())) {
-	                pps.setExpiryDate(outputDateFormat.format(expDate)); // Update the expiry date format if needed
-	                expiredProjects.add(pps); // Add expired project to the list
+	            if (expDate.before(new Date())&&pps.getApproved()=='a') {
+	                pps.setExpiryDate(outputDateFormat.format(expDate));
+	                expiredProjects.add(pps);
 	            }
 	        } catch (ParseException e) {
 	            e.printStackTrace();
 	        }
-	        System.out.print(pps);
 	    }
 
-	    model.addAttribute("projects", expiredProjects); 
+	    // Create a PageRequest for pagination
+	    PageRequest pageRequest = PageRequest.of(page, size);
 
-	    model.addAttribute("email",(String)session.getAttribute("email"));// Add the list of expired projects to the model
+	    // Convert the list of expired projects to a Page
+	    int start = (int) pageRequest.getOffset();
+	    int end = (start + pageRequest.getPageSize()) > expiredProjects.size() ? expiredProjects.size() : (start + pageRequest.getPageSize());
+	    Page<PostProjectsModel> projectsPage = new PageImpl<>(expiredProjects.subList(start, end), pageRequest, expiredProjects.size());
+
+	    model.addAttribute("projects", projectsPage.getContent());
+	    model.addAttribute("currentPage", page);
+	    model.addAttribute("totalPages", projectsPage.getTotalPages());
+
+	    model.addAttribute("email", (String) session.getAttribute("email"));
 	    return "viewExpProjects";
 	}
-
 
 	@GetMapping("/projectDetails")
 	public ModelAndView getProjectDetails(@RequestParam("name") String projectName, Model model, HttpSession session) {
@@ -558,6 +736,63 @@ public class PostProjects {
 	    
 	    }
 	 
+	 @PostMapping("/likeProject")
+	    public ResponseEntity<String> likeProject(@RequestParam String projectName) {
+	        // Logic to increment the like count in the database
+	        PostProjectsModel project = projectRepo.findById(projectName).orElse(null);
+	        if (project != null) {
+	            int currentLikes = Integer.parseInt(project.getLikes());
+	            project.setLikes(String.valueOf(currentLikes + 1));
+	            projectRepo.save(project);
+	            return ResponseEntity.ok("Liked successfully");
+	        } else {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found");
+	        }
+	    }
+
+	    @PostMapping("/dislikeProject")
+	    public ResponseEntity<String> dislikeProject(@RequestParam String projectName) {
+	        // Logic to increment the dislike count in the database
+	        PostProjectsModel project = projectRepo.findById(projectName).orElse(null);
+	        if (project != null) {
+	            int currentDislikes = Integer.parseInt(project.getDislikes());
+	            project.setDislikes(String.valueOf(currentDislikes + 1));
+	            projectRepo.save(project);
+	            return ResponseEntity.ok("Disliked successfully");
+	        } else {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found");
+	        }
+	    }
+	    
+	    @GetMapping("/flagUser")
+	    @ResponseBody
+	    public ResponseEntity<String> flagUser(@RequestParam("userMail") String userMail) {
+	        try {
+	            User userfound = userRepo.findById(userMail).orElse(null);
+
+	            if (userfound != null) {
+	                userfound.setFlags(userfound.getFlags() + 1);
+	                userRepo.save(userfound);
+	            } else {
+	                Bearcat bearcat = bearcatRepo.findById(userMail).orElse(null);
+	                if (bearcat != null) {
+	                    bearcat.setFlags(bearcat.getFlags() + 1);
+	                    bearcatRepo.save(bearcat);
+	                } else {
+	                    // User not found in both repositories
+	                    return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+	                }
+	            }
+
+	            // Return success message as JSON
+	            return new ResponseEntity<>("{\"message\":\"Flagged user successfully\"}", HttpStatus.OK);
+	        } catch (Exception e) {
+	            // Handle exceptions and return an error message
+	            return new ResponseEntity<>("{\"error\":\"" + e.getMessage() + "\"}", HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+	}
+
 	 /*
 	  * @PostMapping("/saveRequests")
 	 public ModelAndView postProjectsForm(@RequestParam("contactName") String contactName, @RequestParam("contactEmail") String contactEmail,PostProjectsModel pps) {
@@ -576,4 +811,3 @@ public class PostProjects {
 	        return modelAndView;
 	    }
      */
-}

@@ -28,6 +28,8 @@ public class PostProjectsModel {
 	private String userMail;
 	private char approved;
 	private String usrName;
+	private String likes;
+	private String dislikes;
 	
 		
 	
@@ -155,6 +157,18 @@ public class PostProjectsModel {
 	}
 	public void setUsrName(String usrName) {
 		this.usrName = usrName;
+	}
+	public String getLikes() {
+		return likes;
+	}
+	public void setLikes(String likes) {
+		this.likes = likes;
+	}
+	public String getDislikes() {
+		return dislikes;
+	}
+	public void setDislikes(String dislikes) {
+		this.dislikes = dislikes;
 	}
 	
 	

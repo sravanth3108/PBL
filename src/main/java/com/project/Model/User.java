@@ -16,10 +16,8 @@ public class User {
     private String profilePictureURL;
     @Field("profilePicture")
     private byte[] profilePicture;
-
+    private int flags;
     
-
-
 	public byte[] getProfilePicture() {
 		return profilePicture;
 	}
@@ -67,6 +65,12 @@ public class User {
 	}
 	public void setProfilePictureURL(String profilePictureURL) {
 		this.profilePictureURL = profilePictureURL;
+	}
+	public int getFlags() {
+		return flags;
+	}
+	public void setFlags(int flags) {
+		this.flags = flags;
 	}
     
     

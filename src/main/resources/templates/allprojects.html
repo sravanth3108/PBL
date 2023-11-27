@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile - PBL</title>
+    <title>User Projects - PBL</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -41,7 +41,8 @@
 
         .projects {
             width: 1100px;
-            top:450px;
+            top:90px;
+            left:300px
         }
 
         .profile-picture {
@@ -183,133 +184,126 @@
             width: 90px;
         }
         img {
-  width: 100%;
-  height: 100%;
-}
+            width: 100%;
+            height: 100%;
+        }
 
-.bg-black {
-  background: #000;
-}
+        .bg-black {
+            background: #000;
+        }
 
-.skill-block {
-  width: 30%;
-}
+        .skill-block {
+            width: 30%;
+        }
 
-@media (min-width: 991px) and (max-width:1200px) {
-  .skill-block {
-    padding: 32px !important;
-  }
-}
+        @media (min-width: 991px) and (max-width:1200px) {
+            .skill-block {
+                padding: 32px !important;
+            }
+        }
 
-@media (min-width: 1200px) {
-  .skill-block {
-    padding: 56px !important;
-  }
-}
-.edit-icon {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background-color: #ffffff;
-    padding: 5px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-.prof-picture {
-    max-height: 373px;
-    max-width:373px;
-    
-}
-.modal-dialog {
-    margin-top: 10%;
-}
+        @media (min-width: 1200px) {
+            .skill-block {
+                padding: 56px !important;
+            }
+        }
+        .edit-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: #ffffff;
+            padding: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .prof-picture {
+            max-height: 373px;
+            max-width:373px;
 
+        }
+        .modal-dialog {
+            margin-top: 10%;
+        }
 
-body {
-  background-color: #eeeeee;
-}
+        body {
+            background-color: #eeeeee;
+        }
     </style>
 
     <script>
-
-
-    
-    function deleteProject(projName) {
-        // Send DELETE request to the server
-        fetch('/deleteProject?name=' + projName, {
-            method: 'DELETE'
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Project' + projName +' has been deleted') // Parse response body as text
-            }
-            throw new Error('Network response was not ok.');
-        })
-        .then(data => {
-            // Display alert with the response message
-            alert(data);
-            // Reload the page to reflect the changes
-            location.reload();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error occurred while deleting the project.');
-        });
-    }
-    function uploadProjects()
-      {;
-        window.location.href="/postProjects";
-
-      }
-
-		function viewRequests(projName) {
-        console.log(projName);
-        var requestsDiv = document.getElementById('requests-' + projName);
-        requestsDiv.style.display = 'block';
-        var count =0;
-    
-        // Fetch requests using AJAX
-        fetch('/getRequests?projName=' + projName)
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('No requests found for the given project');
-                }
+        function deleteProject(projName) {
+            // Send DELETE request to the server
+            fetch('/deleteProject?name=' + projName, {
+                method: 'DELETE'
             })
-            .then(data => {
-                // Populate the requestsDiv with fetched data
-                var html = '';
-                if (data.length === 0) {
-                    html = '<p>No requests found for the given project</p>';
-                } else {
-                    data.forEach(request => {
-                        count=count+1;
-                        html += `<div class="card">
+                .then(response => {
+                    if (response.ok) {
+                        alert('Project' + projName +' has been deleted') // Parse response body as text
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    // Display alert with the response message
+                    alert(data);
+                    // Reload the page to reflect the changes
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error occurred while deleting the project.');
+                });
+        }
+
+        function uploadProjects() {
+            window.location.href="/postProjects";
+        }
+
+        function viewRequests(projName) {
+            console.log(projName);
+            var requestsDiv = document.getElementById('requests-' + projName);
+            requestsDiv.style.display = 'block';
+            var count = 0;
+
+            // Fetch requests using AJAX
+            fetch('/getRequests?projName=' + projName)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('No requests found for the given project');
+                    }
+                })
+                .then(data => {
+                    // Populate the requestsDiv with fetched data
+                    var html = '';
+                    if (data.length === 0) {
+                        html = '<p>No requests found for the given project</p>';
+                    } else {
+                        data.forEach(request => {
+                            count = count + 1;
+                            html += `<div class="card">
                                     <div class="card-body">
                                         <h5> <u>Request ${count} </u></h5>
                                         <h6 class="card-title">${request.contactName}</h6>
                                         <p class="card-text">${request.contactEmail}</p>
                                     </div>
                                 </div>`;
-                    });
-                }
-                requestsDiv.innerHTML = html;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                requestsDiv.innerHTML = '<br><p>There are no requests for this project</p>';
-            });
-    }
-    
+                        });
+                    }
+                    requestsDiv.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    requestsDiv.innerHTML = '<br><p>There are no requests for this project</p>';
+                });
+        }
     </script>
-
 </head>
 
 <body>
 
     <header>
-        <h2 id="h2">User Profile Page</h2>
+        <h2 id="h2">User Projects Page</h2>
         <div class="logo">
             <img src="https://avatars0.githubusercontent.com/u/44843452?s=280&v=4">
         </div>
@@ -318,13 +312,13 @@ body {
             <div class="sidebar left" id="viewprjsdbr">
                 <ul class="nav-links">
                     <li>
-                        <a href="" class="active">
+                        <a href="/" class="active">
                             <i class='bx bx-grid-alt'></i>
                             <span class="links_name">Home</span>
                         </a>
                     </li>
                     <li>
-                        <a onclick = "uploadProjects()">
+                        <a onclick="uploadProjects()">
                             <i class='bx bx-box'></i>
                             <span class="links_name">Upload projects</span>
                         </a>
@@ -346,72 +340,43 @@ body {
             </div>
         </div>
     </header>
-    <div class="container mt-5">
-        <div class="container mt-5 mb-5" style = "position: fixed; left:70px;top:25%">
-            <div class="row no-gutters">                
-                <div class="col-md-4 col-lg-4"><img class="prof-picture mb-3" th:src="'data:image/jpeg;base64,' + ${profilePicture}" alt="Profile Picture">          
-                <i class="fas fa-pencil-alt edit-icon" data-toggle="modal" data-target="#uploadImageModal"></i>
-            </div>                         
-                <div class="col-md-8 col-lg-8">
-                    <div class="d-flex flex-column">
-                        <div class="d-flex flex-row justify-content-between align-items-center p-5 bg-dark text-white">
-                            <h3 class="display-5" id="userName" th:text = "${username}"></h3>
-                            </div>
-                        <div class="p-3 bg-black text-white">
-                            <h6 id = "userMail" th:text = "${email}"></h6>
+
+    
+    <!-- Projects Section -->
+    <div class="col-md-12 projects">
+        <br>
+        <div class="row">
+            <!-- Loop through projects -->
+            <div th:each="project, iterStat : ${projects}" class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${project.projName}"></h5>
+                        <p class="card-text" th:text="${project.projDesc}"></p>
+                        <!-- Other project details -->
+                        <a th:href="@{'/editProjects?name=' + ${project.projName}}"
+                            class="btn btn-primary btn-sm mr-2">Edit</a>
+                        <a th:href="@{'/deleteProject?name=' + ${project.projName}}"
+                            class="btn btn-danger btn-sm">Delete</a>
+                        <a class="btn btn-info btn-sm position-relative"
+                            th:attr="data-projectname=${project.projName}"
+                            th:style="'background-color: CornFlowerBlue; border-color: CornFlowerBlue;margin-left:10px'"
+                            onclick="viewRequests(this.getAttribute('data-projectname'))">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-danger"
+                                th:text="${project.requestCount}"
+                                style="margin-left: 0px; margin-top: 5px;margin-right:5px; font-size: 12px;"></span>
+                            &nbsp &nbsp &nbsp View Requests
+                        </a>
+
+                        <div th:id="'requests-' + ${project.projName}" class="col-md-12" style="display:none">
+                            <!-- Requests for the specific project will be displayed here -->
                         </div>
-            
-                            
-                            <div class="d-flex flex-row text-white">
-                                <a href="/userProjects" style="color:white" class="p-3 bg-success text-center skill-block">
-                                    <h4 th:text="${count}"></h4>
-                                    <h6>Projects </h6>
-                                </a>
-                            
-                                <a href="/approvedProjects" style="color:white" class="p-3 bg-warning text-center skill-block">
-                                    <h4 th:text="${approved}"></h4>
-                                    <h6>Approved </h6>
-                                </a>
-                            
-                                <a href="/pendingProjects"style="color:white" class="p-4 bg-primary text-center skill-block">
-                                    <h4 th:text="${pending}"></h4>
-                                    <h6>Pending</h6>
-                                </a>
-                            
-                                <a href="/rejectedProjects" style="color:white" class="p-3 bg-danger text-center skill-block">
-                                    <h4 th:text="${rejected}"></h4>
-                                    <h6>Rejected </h6>
-                                </a>
-                            </div>
-                        
                     </div>
                 </div>
             </div>
         </div>
-    
-        
-        
-<!-- Add this modal at the end of your HTML body -->
-<div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Upload Profile Picture</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Your image upload form goes here -->
-                <form id="imageUploadForm" action="/uploadProfilePicture" method="post" enctype="multipart/form-data">
-                    <input type="file" name="profilePicture" accept="image/*">
-                    <button type="submit" class="btn btn-primary">Upload</button>
-                </form>
-            </div>
-        </div>
     </div>
-</div>
 
 </body>
+
 
 </html>

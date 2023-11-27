@@ -13,7 +13,8 @@ public class Bearcat {
     private String lname;
     private String password;
     private String profilePictureURL;
-    private String profilePictureFileName; 
+    private String profilePictureFileName;
+    private int flags;
 	public String getMail() {
 		return mail;
 	}
@@ -55,6 +56,12 @@ public class Bearcat {
 	}
 	public void setProfilePictureFileName(String profilePictureFileName) {
 		this.profilePictureFileName = profilePictureFileName;
+	}
+	public int getFlags() {
+		return flags;
+	}
+	public void setFlags(int flags) {
+		this.flags = flags;
 	}
     
     
