@@ -1,31 +1,29 @@
 package com.project;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
 @Configuration
-public class MongoConfig extends AbstractMongoClientConfiguration {
+public class MongoConfig {
 
-    @Override
-    protected String getDatabaseName() {
-        return "pbl";
-    }
-
-    @Override
-    public MongoClient mongoClient() {
-        // Replace the connection string with your MongoDB Atlas connection string
-        ConnectionString connectionString = new ConnectionString("mongodb+srv://sravanth:sravanth@pbl.wuhdniy.mongodb.net/?retryWrites=true&w=majority");
-        return MongoClients.create(connectionString);
+    // Inject MongoProperties if needed
+    @Bean
+    public MongoDatabaseFactory mongoDbFactory(MongoProperties mongoProperties) {
+        return new SimpleMongoClientDatabaseFactory(mongoProperties.getUri());
     }
 
     @Bean
-    public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(mongoClient(), getDatabaseName());
+    public MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
+        return new MongoTransactionManager(dbFactory);
+    }
+
+    @Bean
+    public MongoTemplate mongoTemplate(MongoDatabaseFactory dbFactory) {
+        return new MongoTemplate(dbFactory);
     }
 }
-
