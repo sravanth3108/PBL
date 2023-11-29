@@ -325,65 +325,36 @@ public class PostProjects {
             return modelAndView;
     }
 	
-	@GetMapping("/searchProjects")
+	    @GetMapping("/searchProjects")
+	    public String searchProject(@RequestParam("keywords") String projectName, HttpSession session, Model model,
+	                                @RequestParam(defaultValue = "0") int page,
+	                                @RequestParam(defaultValue = "9") int size) {
+	        // Retrieve projects by keywords
+	        List<PostProjectsModel> projectsByKeywords = projectRepo.findByKeywordsContaining(projectName);
 
-    public String searchProject(@RequestParam("keywords") String projectName, Model model) 
-    
-    
-	{
-		String str ="";
-	        for(PostProjectsModel pps: projectRepo.findByKeywordsContaining(projectName))
-	        {
-	        	model.addAttribute("projects",pps);
-	        }
-	        for(PostProjectsModel pps: projectRepo.findByNameContaining(projectName))
-	        {
-	        	model.addAttribute("projects",pps);
-	        }
+	        // Retrieve projects by name
+	        List<PostProjectsModel> projectsByName = projectRepo.findByNameContaining(projectName);
+
+	        // Combine the results from both searches
+	        List<PostProjectsModel> combinedProjects = new ArrayList<>();
+	        combinedProjects.addAll(projectsByKeywords);
+	        combinedProjects.addAll(projectsByName);
+
+	        // Create a PageRequest for pagination
+	        PageRequest pageRequest = PageRequest.of(page, size);
+
+	        // Create a Page of projects
+	        int start = (int) pageRequest.getOffset();
+	        int end = (start + pageRequest.getPageSize()) > combinedProjects.size() ? combinedProjects.size() : (start + pageRequest.getPageSize());
+	        Page<PostProjectsModel> projectsPage = new PageImpl<>(combinedProjects.subList(start, end), pageRequest, combinedProjects.size());
+
+	        model.addAttribute("projects", projectsPage.getContent());
+	        model.addAttribute("currentPage", page);
+	        model.addAttribute("totalPages", projectsPage.getTotalPages());
+
+	        model.addAttribute("email", (String) session.getAttribute("email"));
 	        return "view-projects";
-	        
-		/*
-    	List<PostProjectsModel> projects = projectRepo.findAll();
-    	List<PostProjectsModel> projectsFoundList = null;
-    	List<String> projectsFound = null;
-    	for(PostProjectsModel pps : projects)
-    	{
-    		String keywords = pps.getKeywords(); 
-    		
-    		if(keywords.contains(projectName))
-    				{
-    			
-    					projectsFound.add(projectName);
-    					
-    				}
-    	}
-    	
-    	for(String s: projectsFound )
-    	{
-
-        	projectsFoundList = projectRepo.findBy
-        	
-    	}
-        model.addAttribute("projects", projectsFoundList);   
-        System.out.println(projectsFoundList);
-        
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("post-projects.html");
-        return modelAndView;*/
-		
-		
-	}
-    
-	/*
-	@PostMapping("/save")
-	public ModelAndView postProjectsForm(@ModelAttribute PostProjectsModel pps) {
-	    System.out.println(pps);
-	    // Set any other attributes in the model as needed	    
-	    projectRepo.save(pps);
-	    ModelAndView modelAndView = new ModelAndView();
-	    modelAndView.setViewName("redirect:/viewprojects"); // Redirect to the endpoint where you view projects
-	    return modelAndView;
-	}*/
+	    }
 	
 	@PostMapping("/postProjects")
 	public ModelAndView postProjectsForm(@ModelAttribute PostProjectsModel pps,HttpSession session, Model model) {

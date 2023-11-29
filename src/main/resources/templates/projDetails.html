@@ -374,8 +374,8 @@
     }
     
     function submitRequest() {
-    var contactName = document.getElementById("name").value;
-    var contactEmail = document.getElementById("email").value;
+    var contactName = document.getElementById("contactname").value;
+    var contactEmail = document.getElementById("contactemail").value;
 
     if (contactName && contactEmail) {
         var xhr = new XMLHttpRequest();
@@ -580,6 +580,8 @@ function flagSubComment(element) {
                                     <th:block th:unless="${#lists.isEmpty(comment.replies)}">
                                         <div th:each="subcomment : ${comment.replies}" class="subcomment">
                                             <div class="user-info">
+                                                <img th:src="'data:image/jpeg;base64,' + ${comment.profilePicture}" />
+
                                                 <img th:src="'data:image/jpeg;base64,' + ${subcomment.profilePicture}" />
                                                 <span class="username" th:text="${subcomment.usrName}"></span>
                                             </div>
@@ -598,9 +600,9 @@ function flagSubComment(element) {
    <form id="sendRequestForm" action="/saveRequests" method="post">
     <div class="container sendRequest">
         <label>Enter your name</label>
-        <input type="text" id="name" name="contactName" required>
+        <input type="text" id="contactname" name="contactName" required>
         <label>Enter your email</label>
-        <input type="text" id="email" name="contactEmail" required>
+        <input type="text" id="contactemail" name="contactEmail" required>
         <button class="button button1" type="button" onclick="submitRequest()">Submit</button>
         <button class="button button2" type="button" onclick="cancelRequest()">Cancel</button>
     </div>
