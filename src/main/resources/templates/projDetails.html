@@ -581,8 +581,6 @@ function flagSubComment(element) {
                                         <div th:each="subcomment : ${comment.replies}" class="subcomment">
                                             <div class="user-info">
                                                 <img th:src="'data:image/jpeg;base64,' + ${comment.profilePicture}" />
-
-                                                <img th:src="'data:image/jpeg;base64,' + ${subcomment.profilePicture}" />
                                                 <span class="username" th:text="${subcomment.usrName}"></span>
                                             </div>
                                             <span class="subcomment-content" th:text="${subcomment.text}"></span>                                                                           
